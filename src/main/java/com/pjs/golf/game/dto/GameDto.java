@@ -1,6 +1,7 @@
 package com.pjs.golf.game.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.pjs.golf.account.dto.AccountDto;
 import com.pjs.golf.account.dto.AccountSerializer;
 import com.pjs.golf.account.entity.Account;
 import com.pjs.golf.game.entity.Game;
@@ -23,14 +24,15 @@ public class GameDto {
     private static ModelMapper modelMapper = new ModelMapper();
     private Integer id;
 
-    private Account host;
-
+    private AccountDto host;
+    private String subject;
     private MatchField field;
 
 
     private LocalDateTime matchDate;
 
     private String description;
+    private boolean closed =false;
 
     public Game toEntity() {
         modelMapper.getConfiguration()

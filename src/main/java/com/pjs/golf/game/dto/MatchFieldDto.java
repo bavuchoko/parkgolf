@@ -1,6 +1,9 @@
 package com.pjs.golf.game.dto;
 
 
+import com.pjs.golf.account.dto.AccountDto;
+import com.pjs.golf.account.entity.Account;
+import com.pjs.golf.game.entity.City;
 import com.pjs.golf.game.entity.Game;
 import com.pjs.golf.game.entity.MatchField;
 import lombok.*;
@@ -20,7 +23,8 @@ public class MatchFieldDto {
     private Integer id;
 
     private String address;
-
+    private City city;
+    private Account account;
     private String addressDetail;
     private String postNumber;
     private String phone;

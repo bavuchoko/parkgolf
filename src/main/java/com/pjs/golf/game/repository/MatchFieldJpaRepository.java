@@ -1,5 +1,7 @@
 package com.pjs.golf.game.repository;
 
+import com.pjs.golf.game.entity.City;
+import com.pjs.golf.game.entity.Game;
 import com.pjs.golf.game.entity.MatchField;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -9,4 +11,8 @@ public interface MatchFieldJpaRepository extends JpaRepository<MatchField, Integ
 
     @Override
     List<MatchField> findAll();
+
+
+    List<MatchField> findAllByCity(City city);
+
 }

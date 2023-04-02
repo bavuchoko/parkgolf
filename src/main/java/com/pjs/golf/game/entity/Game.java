@@ -28,6 +28,7 @@ public class Game {
     @JsonSerialize(using = AccountSerializer.class)
     private Account host;
 
+    private String subject;
     @ManyToOne(fetch =FetchType.LAZY)
     @JoinColumn(name="field_id")
     @JsonSerialize(using = AccountSerializer.class)
