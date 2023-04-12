@@ -29,7 +29,7 @@ public class Account {
     private String birth;
     @JsonIgnore
     private String password;
-    private String nickname;
+    private String name;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;

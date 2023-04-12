@@ -80,7 +80,9 @@ public class AccountController {
             responseMap.put("result", "success");
             responseMap.put("accessToken", accessToken);
             responseMap.put("username", tokenManager.getUsername(accessToken));
-            responseMap.put("nickname", tokenManager.getNickname(accessToken));
+            responseMap.put("name", tokenManager.getName(accessToken));
+            responseMap.put("birth", tokenManager.getBirth(accessToken));
+            responseMap.put("gender", tokenManager.getGender(accessToken));
             responseMap.put("joinDate", tokenManager.getJoinDate(accessToken));
             responseMap.put("message", "success to create account");
 
@@ -90,7 +92,9 @@ public class AccountController {
             responseMap.put("result", "failed");
             responseMap.put("accessToken", null);
             responseMap.put("username", null);
-            responseMap.put("nickname", null);
+            responseMap.put("name", null);
+            responseMap.put("birth", null);
+            responseMap.put("gender", null);
             responseMap.put("joinDate", null);
             responseMap.put("message", e.getMessage());
             return new ResponseEntity<>("fail to login",HttpStatus.BAD_REQUEST);
@@ -130,7 +134,9 @@ public class AccountController {
             responseMap.put("result", "success");
             responseMap.put("accessToken", accessToken);
             responseMap.put("username", tokenManager.getUsername(accessToken));
-            responseMap.put("nickname", tokenManager.getNickname(accessToken));
+            responseMap.put("name", tokenManager.getName(accessToken));
+            responseMap.put("birth", tokenManager.getBirth(accessToken));
+            responseMap.put("gender", tokenManager.getGender(accessToken));
             responseMap.put("joinDate", tokenManager.getJoinDate(accessToken));
             responseMap.put("message", "success to create account");
 
@@ -141,7 +147,9 @@ public class AccountController {
             responseMap.put("result", "failed");
             responseMap.put("accessToken", null);
             responseMap.put("username", null);
-            responseMap.put("nickname", null);
+            responseMap.put("name", null);
+            responseMap.put("birth", null);
+            responseMap.put("gender", null);
             responseMap.put("joinDate", null);
             responseMap.put("message", e.getMessage());
 
@@ -169,7 +177,9 @@ public class AccountController {
             responseMap.put("result", "success");
             responseMap.put("accessToken", accessToken);
             responseMap.put("username", tokenManager.getUsername(accessToken));
-            responseMap.put("nickname", tokenManager.getNickname(accessToken));
+            responseMap.put("name", tokenManager.getName(accessToken));
+            responseMap.put("birth", tokenManager.getBirth(accessToken));
+            responseMap.put("gender", tokenManager.getGender(accessToken));
             responseMap.put("joinDate", tokenManager.getJoinDate(accessToken));
             responseMap.put("message", "success to create account");
             HttpHeaders httpHeaders = new HttpHeaders();
@@ -182,13 +192,16 @@ public class AccountController {
             responseMap.put("result", "failed");
             responseMap.put("accessToken", null);
             responseMap.put("username", null);
-            responseMap.put("nickname", null);
+            responseMap.put("name", null);
+            responseMap.put("birth", null);
+            responseMap.put("gender", null);
             responseMap.put("joinDate", null);
             responseMap.put("message", e.getMessage());
 
             return new ResponseEntity(responseMap, HttpStatus.BAD_REQUEST);
         }
     }
+
 
     @GetMapping("/logout")
     public void logout(HttpServletRequest req){
@@ -197,7 +210,7 @@ public class AccountController {
 
     @GetMapping("/validation")
     public String valdationTimeCheck(@CurrentUser Account account) {
-        System.out.println(account.getNickname());
+        System.out.println(account.getName());
         return  "aa";
     }
 

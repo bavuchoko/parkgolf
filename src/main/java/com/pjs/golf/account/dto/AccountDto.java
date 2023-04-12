@@ -7,7 +7,6 @@ import lombok.*;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.config.Configuration;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -31,7 +30,7 @@ public class AccountDto {
     @NotBlank(message = "비밀번호는 필수값입니다.")
     private String password;
 
-    private String nickname;
+    private String name;
     private Gender gender;
     private Set<AccountRole> roles;
 

@@ -1,7 +1,6 @@
 package com.pjs.golf.config.token;
 
 import com.pjs.golf.account.dto.AccountAdapter;
-import com.pjs.golf.account.entity.Account;
 import com.pjs.golf.account.repository.AccountJapRepository;
 import com.pjs.golf.common.WebCommon;
 import com.pjs.golf.config.utils.CookieUtil;
@@ -21,10 +20,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -73,15 +72,19 @@ public class TokenManagerImpl implements TokenManager, InitializingBean {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
-        String nickname = ((AccountAdapter)(authentication.getPrincipal())).getAccount().getNickname();
+        String name = ((AccountAdapter)(authentication.getPrincipal())).getAccount().getName();
         String joinDate = ((AccountAdapter)(authentication.getPrincipal())).getAccount().getJoinDate().toString();
+        String gender = ((AccountAdapter)(authentication.getPrincipal())).getAccount().getGender().toString();
+        String birth = ((AccountAdapter)(authentication.getPrincipal())).getAccount().getBirth();
         long now = (new Date()).getTime();
         Date validity =  tokenType == TokenType.ACCESS_TOKEN ?  new Date(now + this.accessTokenValidityTime) : new Date(now + this.refreshTokenValidityTime);
         Map<String, Object> payloads = new HashMap<>();
         payloads.put("username", authentication.getName());
         payloads.put(AUTHORITIES_KEY, authorities);
         payloads.put("joinDate", joinDate);
-        payloads.put("nickname", nickname == null ? "익명" : nickname);
+        payloads.put("birth", birth);
+        payloads.put("name", name == null ? "익명" : name);
+        payloads.put("gender",gender);
 
         return Jwts.builder()
                 .setSubject(authentication.getName())
@@ -147,16 +150,34 @@ public class TokenManagerImpl implements TokenManager, InitializingBean {
         return claims.get("username").toString();
     }
 
-    public String getNickname(String token) {
+    public String getName(String token) {
         Claims claims = Jwts
                 .parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-        return claims.get("nickname").toString();
+        return claims.get("name").toString();
+    }
+    public String getGender(String token) {
+        Claims claims = Jwts
+                .parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.get("gender").toString();
     }
 
+    public String getBirth(String token) {
+        Claims claims = Jwts
+                .parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.get("birth").toString();
+    }
     @Override
     public String getJoinDate(String token) {
         Claims claims = Jwts

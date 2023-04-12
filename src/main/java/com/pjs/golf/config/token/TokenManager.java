@@ -14,6 +14,10 @@ public interface TokenManager {
     Authentication getAuthentication(String token);
 
     String getUsername(String accessToken);
-    String getNickname(String accessToken);
+    String getName(String accessToken);
     String getJoinDate(String accessToken);
+
+    String getBirth(String accessToken);
+
+    String getGender(String accessToken);
 }
