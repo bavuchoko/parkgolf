@@ -49,3 +49,7 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+bootJar {
+	archiveFileName = 'parkgolf.jar'
+	mainClass = 'com.pjs.golf.GolfApplication'
+}
