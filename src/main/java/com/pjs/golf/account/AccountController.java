@@ -123,7 +123,7 @@ public class AccountController {
                 accountDto.setGender(Gender.FEMALE);
             }
             accountDto.setRoles(Set.of(AccountRole.USER));
-            Account account =accountDto.toEntity();
+            Account account =accountDto.toEntity(accountDto);
             accountService.saveAccount(account);
 
             String accessToken = accountService.authorize(accountDto, response, request);
