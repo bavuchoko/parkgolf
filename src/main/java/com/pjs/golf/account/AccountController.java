@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -185,7 +186,7 @@ public class AccountController {
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add(TokenFilter.AUTHORIZATION_HEADER, "Bearer " + accessToken);
 
-            return new ResponseEntity(accessToken, httpHeaders, HttpStatus.OK);
+            return new ResponseEntity(responseMap, httpHeaders, HttpStatus.OK);
 
         }catch (Exception e){
             responseMap.put("status", HttpStatus.BAD_REQUEST);
@@ -202,7 +203,21 @@ public class AccountController {
         }
     }
 
-
+    @PostMapping("/tokenVaildation")
+    public ResponseEntity valdationTimeCheck(@RequestBody String token) {
+        if(StringUtils.hasText(token)){
+            try {
+                if(tokenManager.validateToken(token)){
+                    return new ResponseEntity(HttpStatus.OK);
+                }else {
+                    return new ResponseEntity(HttpStatus.FORBIDDEN);
+                }
+            }catch (Exception e) {
+                return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+            }
+        }
+        return new ResponseEntity("token is empty", HttpStatus.BAD_REQUEST);
+    }
     @GetMapping("/logout")
     public void logout(HttpServletRequest req){
         accountService.logout(req);
