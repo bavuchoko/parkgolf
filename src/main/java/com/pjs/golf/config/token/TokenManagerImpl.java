@@ -1,7 +1,7 @@
 package com.pjs.golf.config.token;
 
 import com.pjs.golf.account.dto.AccountAdapter;
-import com.pjs.golf.account.repository.AccountJapRepository;
+import com.pjs.golf.account.repository.AccountJpaRepository;
 import com.pjs.golf.common.WebCommon;
 import com.pjs.golf.config.utils.CookieUtil;
 import com.pjs.golf.config.utils.RedisUtil;
@@ -23,7 +23,6 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -47,7 +46,7 @@ public class TokenManagerImpl implements TokenManager, InitializingBean {
     RedisUtil redisUtil;
 
     @Autowired
-    AccountJapRepository accountJapRepository;
+    AccountJpaRepository accountJpaRepository;
 
     public TokenManagerImpl(
             @Value("${spring.jwt.secret}") String secret,
@@ -129,7 +128,7 @@ public class TokenManagerImpl implements TokenManager, InitializingBean {
         //Claim 으로부터 username을 꺼낸다.
         String username = claims.get("username", String.class);
         //Username으로 DB 에서 User를 조회하고 그 user로 인증객체 생성을 위해 넣어줄 UserDetail 객체를 생성한다.
-        UserDetails userDetails=  new AccountAdapter(accountJapRepository.findByUsername(username)
+        UserDetails userDetails=  new AccountAdapter(accountJpaRepository.findByUsername(username)
                 .orElseThrow(()->new UsernameNotFoundException(username)));
 
         //이 UsernamePasswordAuthenticationToken(Object principal, Object credentials, Collection<? extends GrantedAuthority> authorities) 생성자는 ..

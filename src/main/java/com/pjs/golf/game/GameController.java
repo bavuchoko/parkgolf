@@ -2,6 +2,7 @@ package com.pjs.golf.game;
 
 
 import com.pjs.golf.account.entity.Account;
+import com.pjs.golf.account.service.AccountService;
 import com.pjs.golf.game.entity.Game;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class GameController {
 
+    private final AccountService accountService;
     @GetMapping
     public ResponseEntity loadGameList(Pageable pageable, PagedResourcesAssembler<Game> assembler){
 

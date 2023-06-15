@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 public interface AccountService extends UserDetailsService {
     Account saveAccount(Account account);
@@ -20,4 +21,8 @@ public interface AccountService extends UserDetailsService {
     void logout(HttpServletRequest req);
 
     Page<Account> loadUserList(Pageable pagable);
+
+    Map getResponseMap(String accessToken);
+
+    boolean validateToken(String token);
 }

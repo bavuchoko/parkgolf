@@ -26,8 +26,8 @@ public class Score {
     private Integer playerId;
 
     @Id
-    @Column(name = "rounding")
-    private Integer rounding;
+    @Column(name = "round_id")
+    private Integer roundId;
 
     @Column(name = "play_group")
     private String playGroup;

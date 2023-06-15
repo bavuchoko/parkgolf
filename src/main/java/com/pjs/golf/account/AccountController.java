@@ -44,8 +44,6 @@ public class AccountController {
     private final AccountService accountService;
 
     @Autowired
-    TokenManager tokenManager;
-    @Autowired
     CookieUtil cookieUtil;
 
 
@@ -71,33 +69,14 @@ public class AccountController {
         if(errors.hasErrors()){
             return badRequest(errors);
         }
-        Map responseMap = new HashMap();
         try {
             String accessToken = accountService.authorize(accountDto,response, request);
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add(TokenFilter.AUTHORIZATION_HEADER, "Bearer " + accessToken);
 
-            responseMap.put("status", HttpStatus.OK);
-            responseMap.put("result", "success");
-            responseMap.put("accessToken", accessToken);
-            responseMap.put("username", tokenManager.getUsername(accessToken));
-            responseMap.put("name", tokenManager.getName(accessToken));
-            responseMap.put("birth", tokenManager.getBirth(accessToken));
-            responseMap.put("gender", tokenManager.getGender(accessToken));
-            responseMap.put("joinDate", tokenManager.getJoinDate(accessToken));
-            responseMap.put("message", "success to create account");
-
+            Map responseMap = accountService.getResponseMap(accessToken);
             return new ResponseEntity(responseMap, httpHeaders, HttpStatus.OK);
         }catch (BadCredentialsException e){
-            responseMap.put("status", HttpStatus.BAD_REQUEST);
-            responseMap.put("result", "failed");
-            responseMap.put("accessToken", null);
-            responseMap.put("username", null);
-            responseMap.put("name", null);
-            responseMap.put("birth", null);
-            responseMap.put("gender", null);
-            responseMap.put("joinDate", null);
-            responseMap.put("message", e.getMessage());
             return new ResponseEntity<>("fail to login",HttpStatus.BAD_REQUEST);
         }
     }
@@ -113,7 +92,6 @@ public class AccountController {
         if (errors.hasErrors()) {
             return badRequest(errors);
         }
-        Map responseMap = new HashMap();
         try {
             accountDto.setRoles(Set.of(AccountRole.USER));
             accountDto.setJoinDate(LocalDateTime.now());
@@ -131,30 +109,11 @@ public class AccountController {
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add(TokenFilter.AUTHORIZATION_HEADER, "Bearer " + accessToken);
 
-            responseMap.put("status", HttpStatus.OK);
-            responseMap.put("result", "success");
-            responseMap.put("accessToken", accessToken);
-            responseMap.put("username", tokenManager.getUsername(accessToken));
-            responseMap.put("name", tokenManager.getName(accessToken));
-            responseMap.put("birth", tokenManager.getBirth(accessToken));
-            responseMap.put("gender", tokenManager.getGender(accessToken));
-            responseMap.put("joinDate", tokenManager.getJoinDate(accessToken));
-            responseMap.put("message", "success to create account");
+            Map responseMap = accountService.getResponseMap(accessToken);
 
             return new ResponseEntity(responseMap, httpHeaders, HttpStatus.OK);
         }catch (IllegalArgumentException e){
-
-            responseMap.put("status", HttpStatus.BAD_REQUEST);
-            responseMap.put("result", "failed");
-            responseMap.put("accessToken", null);
-            responseMap.put("username", null);
-            responseMap.put("name", null);
-            responseMap.put("birth", null);
-            responseMap.put("gender", null);
-            responseMap.put("joinDate", null);
-            responseMap.put("message", e.getMessage());
-
-            return new ResponseEntity<>(responseMap ,HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("fail to login" ,HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -171,35 +130,16 @@ public class AccountController {
     @GetMapping("/reissue")
     public ResponseEntity reissue(HttpServletRequest request) {
 
-        Map responseMap = new HashMap();
         try{
             String accessToken = accountService.reIssueToken(request);
-            responseMap.put("status", HttpStatus.OK);
-            responseMap.put("result", "success");
-            responseMap.put("accessToken", accessToken);
-            responseMap.put("username", tokenManager.getUsername(accessToken));
-            responseMap.put("name", tokenManager.getName(accessToken));
-            responseMap.put("birth", tokenManager.getBirth(accessToken));
-            responseMap.put("gender", tokenManager.getGender(accessToken));
-            responseMap.put("joinDate", tokenManager.getJoinDate(accessToken));
-            responseMap.put("message", "success to create account");
+            Map responseMap = accountService.getResponseMap(accessToken);
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add(TokenFilter.AUTHORIZATION_HEADER, "Bearer " + accessToken);
 
             return new ResponseEntity(responseMap, httpHeaders, HttpStatus.OK);
 
         }catch (Exception e){
-            responseMap.put("status", HttpStatus.BAD_REQUEST);
-            responseMap.put("result", "failed");
-            responseMap.put("accessToken", null);
-            responseMap.put("username", null);
-            responseMap.put("name", null);
-            responseMap.put("birth", null);
-            responseMap.put("gender", null);
-            responseMap.put("joinDate", null);
-            responseMap.put("message", e.getMessage());
-
-            return new ResponseEntity(responseMap, HttpStatus.BAD_REQUEST);
+           return new ResponseEntity("fail to refresh token", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -207,7 +147,7 @@ public class AccountController {
     public ResponseEntity valdationTimeCheck(@RequestBody String token) {
         if(StringUtils.hasText(token)){
             try {
-                if(tokenManager.validateToken(token)){
+                if(accountService.validateToken(token)){
                     return new ResponseEntity(HttpStatus.OK);
                 }else {
                     return new ResponseEntity(HttpStatus.FORBIDDEN);

@@ -4,9 +4,8 @@ package com.pjs.golf.account.service.impl;
 import com.pjs.golf.account.dto.AccountAdapter;
 import com.pjs.golf.account.dto.AccountDto;
 import com.pjs.golf.account.entity.Account;
-import com.pjs.golf.account.repository.AccountJapRepository;
+import com.pjs.golf.account.repository.AccountJpaRepository;
 import com.pjs.golf.account.service.AccountService;
-import com.pjs.golf.common.WebCommon;
 import com.pjs.golf.config.utils.RedisUtil;
 import com.pjs.golf.config.utils.CookieUtil;
 import com.pjs.golf.config.token.TokenManager;
@@ -16,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -30,14 +30,16 @@ import org.springframework.util.StringUtils;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
 
 
-    @Autowired
-    AccountJapRepository accountJapRepository;
+
+    private final AccountJpaRepository accountJpaRepository;
     @Autowired
     CookieUtil cookieUtil;
 
@@ -55,11 +57,11 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Account saveAccount(Account account) {
 
-        accountJapRepository.findByUsername(account.getUsername()).ifPresent(e->{
+        accountJpaRepository.findByUsername(account.getUsername()).ifPresent(e->{
             throw new IllegalArgumentException("Duplicated username");
         });
         account.setPassword(this.passwordEncoder.encode(account.getPassword()));
-        return this.accountJapRepository.save(account);
+        return this.accountJpaRepository.save(account);
     }
 
 
@@ -126,13 +128,34 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Page<Account> loadUserList(Pageable pagable){
-        return this.accountJapRepository.findAll(pagable);
+        return this.accountJpaRepository.findAll(pagable);
+    }
+
+    @Override
+    public Map getResponseMap(String accessToken) {
+        Map responseMap = new HashMap<>();
+        responseMap.put("status", HttpStatus.OK);
+        responseMap.put("result", "success");
+        responseMap.put("accessToken", accessToken);
+        responseMap.put("username", tokenManager.getUsername(accessToken));
+        responseMap.put("name", tokenManager.getName(accessToken));
+        responseMap.put("birth", tokenManager.getBirth(accessToken));
+        responseMap.put("gender", tokenManager.getGender(accessToken));
+        responseMap.put("joinDate", tokenManager.getJoinDate(accessToken));
+        return responseMap;
+    }
+
+    @Override
+    public boolean validateToken(String token) {
+        return tokenManager.validateToken(token);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Account account = accountJapRepository.findByUsername(username)
+        Account account = accountJpaRepository.findByUsername(username)
                 .orElseThrow(()->new UsernameNotFoundException(username));
         return new AccountAdapter(account);
     }
+
+
 }
