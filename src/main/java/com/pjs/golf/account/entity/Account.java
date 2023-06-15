@@ -1,6 +1,7 @@
 package com.pjs.golf.account.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pjs.golf.game.entity.Game;
@@ -43,8 +44,4 @@ public class Account {
     @Enumerated(EnumType.STRING)
     private Set<AccountRole> roles;
 
-
-    @ManyToOne(targetEntity = Game.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "game_id")
-    private Game game;
 }

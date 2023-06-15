@@ -28,9 +28,5 @@ public class Game {
     private String day;
     private String detail;
 
-    @OneToMany
-    @JoinColumn(name = "account_id")
-    private List<Account> player;
-
 
 }
