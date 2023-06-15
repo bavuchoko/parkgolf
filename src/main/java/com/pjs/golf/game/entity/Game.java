@@ -1,8 +1,10 @@
 package com.pjs.golf.game.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.pjs.golf.account.entity.Account;
 import lombok.*;
 import org.modelmapper.config.Configuration;
+import org.springframework.http.ResponseEntity;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -21,6 +23,10 @@ public class Game {
     @GeneratedValue(strategy = GenerationType.IDENTITY )
     @Column(name = "game_id")
     private Integer id;
+
+    @ManyToOne
+    @JoinColumn(name = "account_id")
+    private Account opener;
 
     private LocalDateTime date;
     private String address;

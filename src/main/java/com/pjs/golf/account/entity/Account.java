@@ -9,6 +9,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -43,5 +44,8 @@ public class Account {
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private Set<AccountRole> roles;
+
+    @OneToMany(mappedBy = "opener", fetch=FetchType.LAZY)
+    private List<Game> games;
 
 }
