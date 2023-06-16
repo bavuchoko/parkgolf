@@ -27,7 +27,6 @@ public class Game {
     @ManyToOne
     @JoinColumn(name = "account_id")
     private Account opener;
-
     private LocalDateTime date;
     private String address;
     private int playerCount;
