@@ -1,4 +1,4 @@
-package com.pjs.golf.common;
+package com.pjs.golf.common.jpa;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;

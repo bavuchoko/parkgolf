@@ -34,7 +34,7 @@ public class GameJpaQuerydslSupport extends QuerydslRepositorySupport {
         JPAQuery<Game> query= queryFactory.selectFrom(game).where(
                 eqAddress(search.getSearchTxt()),
                 likeDetail(search.getSearchTxt()),
-                game.date.between(search.getStartDate(),search.getEndDate())
+                game.playDate.between(search.getStartDate(),search.getEndDate())
         );
         long totalCount = query.stream().count();
         List<Game> result = getQuerydsl().applyPagination(pageable,query).fetch();

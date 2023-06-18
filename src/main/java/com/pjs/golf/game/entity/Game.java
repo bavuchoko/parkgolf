@@ -7,12 +7,12 @@ import org.modelmapper.config.Configuration;
 import org.springframework.http.ResponseEntity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,12 +26,25 @@ public class Game {
 
     @ManyToOne
     @JoinColumn(name = "account_id")
+    @Column(nullable = false)
     private Account opener;
-    private LocalDateTime date;
+
+    @Column(nullable = false)
+    private LocalDateTime createDate;
+
+    @Column(nullable = false)
+    private LocalDateTime playDate;
+    @Column(nullable = false)
     private String address;
     private int playerCount;
     private String day;
     private String detail;
 
+    public void opener(Account opener) {
+        this.opener = opener;
+    }
 
+    public void createdAt(LocalDateTime createDate) {
+        this.createDate = createDate;
+    }
 }

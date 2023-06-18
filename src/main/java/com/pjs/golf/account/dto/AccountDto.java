@@ -5,13 +5,9 @@ import com.pjs.golf.account.entity.AccountRole;
 import com.pjs.golf.account.entity.Gender;
 import com.pjs.golf.common.ModelMapperUtils;
 import lombok.*;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.config.Configuration;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.Set;
 

@@ -9,6 +9,12 @@ public interface GameService {
 
     Game getGameInfo(int id);
 
-
+    /**
+     * 목록조회
+     * @param search SearchDto
+     * @param pageable Pageable
+     * */
     Page<Game> getGameList(SearchDto search, Pageable pageable);
+
+    Game createGame(Game game);
 }

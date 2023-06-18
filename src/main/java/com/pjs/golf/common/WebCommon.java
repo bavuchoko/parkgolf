@@ -1,9 +1,15 @@
 package com.pjs.golf.common;
 
+import com.pjs.golf.game.GameController;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.Errors;
 
 import javax.servlet.http.HttpServletRequest;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @Component
 public class WebCommon {
@@ -43,4 +49,12 @@ public class WebCommon {
         }
         return ip;
     }
+
+    /**
+     *  Dto 유효성 검증 실패시 에러 return
+     * */
+    public static  <T> ResponseEntity<EntityModel<Errors>> badRequest(Errors errors,  Class<T> clazz) {
+        return ResponseEntity.badRequest().body(EntityModel.of(errors).add(linkTo(clazz).slash("/").withRel("redirect")));
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.pjs.golf.game.service.impl;
 
 import com.pjs.golf.common.dto.SearchDto;
+import com.pjs.golf.common.exception.NoSuchDataCustomException;
 import com.pjs.golf.game.entity.Game;
 import com.pjs.golf.game.entity.QGame;
 import com.pjs.golf.game.repository.GameJpaRepository;
@@ -26,12 +27,18 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public Game getGameInfo(int id) {
-        return gameJpaRepository.findById(id).orElseThrow(()->new NoSuchElementException());
+        return gameJpaRepository.findById(id).orElseThrow(()->new NoSuchDataCustomException("해당 데이터 없음"));
     }
+
 
     @Override
     public Page<Game> getGameList(SearchDto search, Pageable pageable) {
         return  gameJpaQuerydslSupport.getGameListBySearch(search, pageable);
+    }
+
+    @Override
+    public Game createGame(Game game) {
+        return null;
     }
 
 
