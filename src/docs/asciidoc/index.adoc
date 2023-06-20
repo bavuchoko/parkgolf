@@ -1,0 +1,20 @@
+
+= REST API Document
+sejong-parkgolf(세종시 파크골프)
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs // 문서에 표기되는 코드들의 하이라이팅을 highlightjs를 사용
+:toc: left // toc (Table Of Contents)를 문서의 좌측에 두기
+:toclevels: 2
+:sectlinks:
+
+[[GAME-API]]
+== 경기
+
+[[game-create-query]]
+=== 경기 등록
+operation::game-controller-test/game-list-api[snippets='http-request,path-parameters,http-response,response-fields']
+
+[[game-list-query]]
+=== 경기 목록 조회
+operation::game-controller-test/game-list-api[snippets='http-request,path-parameters,http-response,response-fields']

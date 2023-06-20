@@ -20,9 +20,9 @@ public class GameDto {
 
     private Account opener;
 
-    @NotNull
     private LocalDateTime createDate;
 
+    @NotNull
     private LocalDateTime playDate;
 
     @NotNull
@@ -31,7 +31,7 @@ public class GameDto {
     private String day;
     private String detail;
 
-    public Game toEntity(GameDto gameDto) {
-        return ModelMapperUtils.getModelMapper().map(gameDto, Game.class);
+    public Game toEntity() {
+        return ModelMapperUtils.getModelMapper().map(this, Game.class);
     }
 }

@@ -26,7 +26,6 @@ public class Game {
 
     @ManyToOne
     @JoinColumn(name = "account_id")
-    @Column(nullable = false)
     private Account opener;
 
     @Column(nullable = false)
@@ -37,7 +36,7 @@ public class Game {
     @Column(nullable = false)
     private String address;
     private int playerCount;
-    private String day;
+    private String dayKor;
     private String detail;
 
     public void opener(Account opener) {

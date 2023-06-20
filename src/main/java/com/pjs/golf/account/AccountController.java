@@ -83,7 +83,7 @@ public class AccountController {
 
 
     //회원가입
-    @PostMapping("/create")
+    @PostMapping("/api/create")
     public ResponseEntity creatAccount(
             @Valid @RequestBody AccountDto accountDto,
             Errors errors,
@@ -102,7 +102,7 @@ public class AccountController {
                 accountDto.setGender(Gender.FEMALE);
             }
             accountDto.setRoles(Set.of(AccountRole.USER));
-            Account account =accountDto.toEntity(accountDto);
+            Account account =accountDto.toEntity();
             accountService.saveAccount(account);
 
             String accessToken = accountService.authorize(accountDto, response, request);

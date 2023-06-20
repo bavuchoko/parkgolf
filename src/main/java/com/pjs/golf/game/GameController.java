@@ -22,13 +22,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
-@RequestMapping(value = "/game",  produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(value = "/api/game",  produces = MediaTypes.HAL_JSON_VALUE)
 @RequiredArgsConstructor
 public class GameController {
 
@@ -59,9 +60,13 @@ public class GameController {
                 .build();
 
         Page<Game> games = gameService.getGameList(search,pageable);
-        var pageResources = assembler.toModel(games, entity -> EntityModel.of(entity).add(linkTo(GameController.class).slash(entity.getPlayDate()).withRel("query-content")));
+        var pageResources = assembler.toModel(games, entity ->
+                EntityModel.of(entity)
+                        .add(linkTo(GameController.class).slash(entity.getPlayDate()).withRel("query-content"))
+                        .add(linkTo(GameController.class).withSelfRel())
+        );
+        pageResources.add(Link.of("/docs/ascidoc/api.html").withRel("profile"));
 
-        //        pageResources.add(Link.of("/docs/ascidoc/api.html").withRel("profile"));
         return ResponseEntity.ok().body(pageResources);
     }
 
@@ -103,7 +108,6 @@ public class GameController {
     @PostMapping
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity creatGame(
-            @PathVariable int id,
             @RequestBody GameDto gameDto,
             Errors errors,
             @CurrentUser Account account){
@@ -114,17 +118,17 @@ public class GameController {
 
         gameDto.setOpener(account);
         gameDto.setCreateDate(LocalDateTime.now());
-        Game game = gameDto.toEntity(gameDto);
+        Game game = gameDto.toEntity();
         try{
             Game savedGame = gameService.createGame(game);
             WebMvcLinkBuilder selfLink = linkTo(GameController.class).slash(game.getId());
             EntityModel resource = EntityModel.of(savedGame);
-
+            URI uri = selfLink.toUri();
             resource.add(selfLink.withRel("query"));
             if (game.getOpener().equals(account)) {
                 resource.add(selfLink.withRel("update"));
             }
-            return ResponseEntity.ok().body(resource);
+            return ResponseEntity.created(uri).body(resource);
         }catch (Exception e){
             return ResponseEntity.internalServerError().build();
         }

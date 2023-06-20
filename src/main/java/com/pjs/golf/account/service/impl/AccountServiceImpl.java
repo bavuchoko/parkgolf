@@ -6,6 +6,7 @@ import com.pjs.golf.account.dto.AccountDto;
 import com.pjs.golf.account.entity.Account;
 import com.pjs.golf.account.repository.AccountJpaRepository;
 import com.pjs.golf.account.service.AccountService;
+import com.pjs.golf.common.WebCommon;
 import com.pjs.golf.config.utils.RedisUtil;
 import com.pjs.golf.config.utils.CookieUtil;
 import com.pjs.golf.config.token.TokenManager;
@@ -60,7 +61,7 @@ public class AccountServiceImpl implements AccountService {
         accountJpaRepository.findByUsername(account.getUsername()).ifPresent(e->{
             throw new IllegalArgumentException("Duplicated username");
         });
-        account.setPassword(this.passwordEncoder.encode(account.getPassword()));
+        account.overwritePassword(this.passwordEncoder.encode(account.getPassword()));
         return this.accountJpaRepository.save(account);
     }
 

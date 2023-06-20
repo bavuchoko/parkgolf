@@ -47,4 +47,8 @@ public class Account {
     @OneToMany(mappedBy = "opener", fetch=FetchType.LAZY)
     private List<Game> games;
 
+    public void overwritePassword(String password) {
+        this.password = password;
+    }
+
 }

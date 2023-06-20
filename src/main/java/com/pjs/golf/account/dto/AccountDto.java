@@ -38,8 +38,8 @@ public class AccountDto {
 
     private LocalDateTime joinDate;
     private String protrait;
-    public Account toEntity(AccountDto accountDto) {
-        return ModelMapperUtils.getModelMapper().map(accountDto, Account.class);
+    public Account toEntity() {
+        return ModelMapperUtils.getModelMapper().map(this, Account.class);
     }
 }
 

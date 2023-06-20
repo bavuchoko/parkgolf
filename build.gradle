@@ -8,6 +8,8 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.7.10'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+	// Asciidoctor
+	id 'org.asciidoctor.jvm.convert' version '3.3.2'
 }
 
 group = 'com.pjs'
@@ -41,11 +43,13 @@ dependencies {
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+	testRuntimeOnly  'com.h2database:h2'
+	// Spring REST Docs
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 
 	implementation 'commons-io:commons-io:2.11.0'    /* Apache commons-io */
 	implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4' /* Apache Commons FileUpload */
 
-	testRuntimeOnly  'com.h2database:h2'
 	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.1'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.1'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.1'
@@ -65,9 +69,10 @@ dependencies {
 
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
-}
+//하단에 asciidoctor 세팅으로 이동
+//tasks.named('test') {
+//	useJUnitPlatform()
+//}
 bootJar {
 	archiveFileName = 'parkgolf.jar'
 	mainClass = 'com.pjs.golf.GolfApplication'
@@ -79,4 +84,36 @@ sourceSets {
 			srcDirs = ["$projectDir/src/main/java", "$projectDir/build/generated"]
 		}
 	}
+}
+
+//asccidoctor -> ext 를 통해 외부 프로퍼티 설정하기
+ext {
+	snippetsDir = file('./build/generated-snippets')
+}
+//asccidoctor -> task 의존성 세팅
+asciidoctor {
+	inputs.dir snippetsDir
+	// 다른 Task 에 의존한다는 것을 알리는 것이다.
+	// test Task 에 의존함을 알린다.
+	// asciidoctor task 를 실행할 때, test task 를 먼저 실행한다.
+	dependsOn test
+}
+//asccidoctor -> task 에 할일 추가 : output 을 snippetsDir 에 담도록 한다.
+test {
+	useJUnitPlatform()
+	outputs.dir snippetsDir
+}
+//asccidoctor -> asciidoctor 실행 전에 할 일 세팅하기 : asciidoctor 를 실행하기 전, 해당 경로의 파일을 모두 지우도록 한다.
+asciidoctor.doFirst {
+	delete file('src/main/resources/static/docs')
+}
+//asccidoctor -> 만들어진 파일이 src/main/resources/statics/docs 에 위치하도록 한다.
+task copyDocument(type: Copy) {
+	dependsOn asciidoctor
+	from file("build/docs/asciidoc")
+	into file("src/main/resources/static/docs")
+}
+//build 에 의존성 걸기 :build 시, copyDocument task 가 실행되어 문서를 위에서 정해진 위치에 복사하도록 한다.
+build {
+	dependsOn copyDocument
 }
