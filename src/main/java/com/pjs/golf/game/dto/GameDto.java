@@ -28,7 +28,7 @@ public class GameDto {
     @NotNull
     private String address;
     private int playerCount;
-    private String day;
+    private String dayKor;
     private String detail;
 
     public Game toEntity() {

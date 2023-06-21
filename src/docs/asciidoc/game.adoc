@@ -1,0 +1,19 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+== REQUEST
+
+include::{snippets}/game-create-api/http-request.adoc[]
+
+== RESPONSE
+
+include::{snippets}/game-create-api/http-response.adoc[]
+
+== RESPONSE HEADER
+
+include::{snippets}/game-create-api/response-headers.adoc[]
+
+== RESPONSE FIEDL
+
+include::{snippets}/game-create-api/response-fields.adoc[]

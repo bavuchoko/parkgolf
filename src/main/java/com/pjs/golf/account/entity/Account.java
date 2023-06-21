@@ -44,8 +44,8 @@ public class Account {
     @Enumerated(EnumType.STRING)
     private Set<AccountRole> roles;
 
-    @OneToMany(mappedBy = "opener", fetch=FetchType.LAZY)
-    private List<Game> games;
+//    @OneToMany(mappedBy = "opener", fetch=FetchType.LAZY)
+//    private List<Game> games;
 
     public void overwritePassword(String password) {
         this.password = password;

@@ -45,7 +45,7 @@ public class GameController {
      * </pre>
      */
     @GetMapping
-    public ResponseEntity loadGameList(
+    public ResponseEntity getGameList(
             Pageable pageable,
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate,
@@ -72,7 +72,7 @@ public class GameController {
 
 
     /**
-     * 상세조회
+     * 경기 상세 조회
      * <pre>
      * 해당하는 게임의 id 값을 받아서 해당 게임의 상세내용을 조회한다.
      * @return 200 | 204
@@ -88,8 +88,7 @@ public class GameController {
             WebMvcLinkBuilder selfLink = linkTo(GameController.class).slash(game.getId());
             EntityModel resource = EntityModel.of(game);
 
-            // TODO: 2023-06-15  api문서 링크
-            //       resource.add(Link.of("/docs/asciidoc/game/api.html#").withRel("profile"));
+            resource.add(Link.of("/docs/asciidoc/api.html#").withRel("profile"));
             resource.add(selfLink.withRel("query"));
             if (game.getOpener().equals(account)) {
                 resource.add(selfLink.withRel("update"));
@@ -124,10 +123,11 @@ public class GameController {
             WebMvcLinkBuilder selfLink = linkTo(GameController.class).slash(game.getId());
             EntityModel resource = EntityModel.of(savedGame);
             URI uri = selfLink.toUri();
-            resource.add(selfLink.withRel("query"));
+            resource.add(selfLink.withRel("self"));
             if (game.getOpener().equals(account)) {
                 resource.add(selfLink.withRel("update"));
             }
+            resource.add(Link.of("/docs/asciidoc/api.html#").withRel("profile"));
             return ResponseEntity.created(uri).body(resource);
         }catch (Exception e){
             return ResponseEntity.internalServerError().build();

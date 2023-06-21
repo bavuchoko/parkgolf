@@ -66,8 +66,7 @@ class GameControllerTest extends BaseControllerTest {
                         ),
                         links(
                                 linkWithRel("self").description("자기 자신의 링크"),
-                                linkWithRel("query-content").description("리스트 조회 링크"),
-                                linkWithRel("update-content").description("수정 링크"),
+                                linkWithRel("update").description("수정 링크"),
                                 linkWithRel("profile").description("프로필")
                         ),
                         requestHeaders(
@@ -92,9 +91,9 @@ class GameControllerTest extends BaseControllerTest {
                                 fieldWithPath("createDate").description("경기 등록 일자"),
                                 fieldWithPath("playDate").description("경기 일자"),
                                 fieldWithPath("_links.self.href").description("자기 자신 링크"),
-                                fieldWithPath("_links.query-content.href").description("리스트 조회 링크"),
-                                fieldWithPath("_links.update-content.href").description("자신 수정 링크"),
-                                fieldWithPath("_links.profile.href").description("프로필")
+                                fieldWithPath("_links.update.href").description("자신 수정 링크")
+//                                ,
+//                                fieldWithPath("_links.profile.href").description("프로필")
                         )
                 ));
     }

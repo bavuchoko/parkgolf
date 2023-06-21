@@ -38,7 +38,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public Game createGame(Game game) {
-        return null;
+        return gameJpaRepository.save(game);
     }
 
 

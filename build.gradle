@@ -69,51 +69,54 @@ dependencies {
 
 }
 
+// 변수 선언
+ext {
+	snippetsDir = file('build/generated-snippets')
+}
 //하단에 asciidoctor 세팅으로 이동
 //tasks.named('test') {
 //	useJUnitPlatform()
 //}
-bootJar {
-	archiveFileName = 'parkgolf.jar'
-	mainClass = 'com.pjs.golf.GolfApplication'
-}
-// QueryDSL
-sourceSets {
-	main {
-		java {
-			srcDirs = ["$projectDir/src/main/java", "$projectDir/build/generated"]
-		}
-	}
+// 기존에 만들어진 adoc 삭제
+asciidoctor.doFirst {
+	delete file('src/main/resources/static/docs')
 }
 
-//asccidoctor -> ext 를 통해 외부 프로퍼티 설정하기
-ext {
-	snippetsDir = file('./build/generated-snippets')
-}
-//asccidoctor -> task 의존성 세팅
-asciidoctor {
-	inputs.dir snippetsDir
-	// 다른 Task 에 의존한다는 것을 알리는 것이다.
-	// test Task 에 의존함을 알린다.
-	// asciidoctor task 를 실행할 때, test task 를 먼저 실행한다.
-	dependsOn test
-}
-//asccidoctor -> task 에 할일 추가 : output 을 snippetsDir 에 담도록 한다.
+// 생성물이 snippetsDir에 생성됩니다.
 test {
 	useJUnitPlatform()
 	outputs.dir snippetsDir
 }
-//asccidoctor -> asciidoctor 실행 전에 할 일 세팅하기 : asciidoctor 를 실행하기 전, 해당 경로의 파일을 모두 지우도록 한다.
-asciidoctor.doFirst {
-	delete file('src/main/resources/static/docs')
+
+// asciidoctor 설정입니다. dependsOn은 Task가 의존하는 것을 명시합니다.
+// 따라서 위에만든 test Task를 의존합니다.
+asciidoctor {
+	inputs.dir snippetsDir
+	dependsOn test
 }
-//asccidoctor -> 만들어진 파일이 src/main/resources/statics/docs 에 위치하도록 한다.
+
+
+
+// bootjar과 관련된 설정이며, 스니펫을 이용해 문서 작성 후,
+// build - docs - asciidoc 하위에 생기는 html 파일을 BOOT-INF/classes/static/docs로 복사해줍니다.
+bootJar {
+	dependsOn asciidoctor
+	copy {
+		from "${asciidoctor.outputDir}"
+		into 'BOOT-INF/classes/static/docs'
+	}
+}
+
+
+// asciidoctor를 의존하고, from file 경로에 있는 파일을 into file로 복사를 진행합니다.
 task copyDocument(type: Copy) {
 	dependsOn asciidoctor
 	from file("build/docs/asciidoc")
 	into file("src/main/resources/static/docs")
 }
-//build 에 의존성 걸기 :build 시, copyDocument task 가 실행되어 문서를 위에서 정해진 위치에 복사하도록 한다.
+
+
+// build시 copyDocument를 의존합니다.
 build {
 	dependsOn copyDocument
 }
