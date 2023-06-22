@@ -65,7 +65,7 @@ public class GameController {
                         .add(linkTo(GameController.class).slash(entity.getPlayDate()).withRel("query-content"))
                         .add(linkTo(GameController.class).withSelfRel())
         );
-        pageResources.add(Link.of("/docs/ascidoc/api.html").withRel("profile"));
+        pageResources.add(Link.of("/docs/ascidoc/index.html##_경기_목록_조회").withRel("profile"));
 
         return ResponseEntity.ok().body(pageResources);
     }

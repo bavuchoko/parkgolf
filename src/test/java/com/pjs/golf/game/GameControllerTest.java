@@ -29,6 +29,8 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -62,6 +64,7 @@ class GameControllerTest extends BaseControllerTest {
                                 Preprocessors.modifyUris()
                                         .scheme("https")
                                         .host("sejong-parkgolf.com")
+                                        .removePort()
 
                         ),
                         links(
@@ -90,8 +93,8 @@ class GameControllerTest extends BaseControllerTest {
                                 fieldWithPath("detail").description("경기 상세 내용"),
                                 fieldWithPath("createDate").description("경기 등록 일자"),
                                 fieldWithPath("playDate").description("경기 일자"),
-                                fieldWithPath("_links.self.href").description("자기 자신 링크"),
-                                fieldWithPath("_links.update.href").description("자신 수정 링크")
+                                fieldWithPath("_links.self.href").description("상세페이지 링크"),
+                                fieldWithPath("_links.update.href").description("수정페이지 링크")
 //                                ,
 //                                fieldWithPath("_links.profile.href").description("프로필")
                         )
@@ -119,6 +122,11 @@ class GameControllerTest extends BaseControllerTest {
                                         .scheme("https")
                                         .host("sejong-parkgolf.com")
 
+                        ),
+                        requestParameters(
+                                parameterWithName("startDate").optional().description("페이지 번호"),
+                                parameterWithName("endDate").optional().description("페이지 사이즈"),
+                                parameterWithName("searchTxt").optional().description("페이지 사이즈")
                         ),
                         links(
                                 linkWithRel("profile").description("프로필"),
