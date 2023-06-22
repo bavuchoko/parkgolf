@@ -94,9 +94,11 @@ class GameControllerTest extends BaseControllerTest {
                                 fieldWithPath("createDate").description("경기 등록 일자"),
                                 fieldWithPath("playDate").description("경기 일자"),
                                 fieldWithPath("_links.self.href").description("상세페이지 링크"),
-                                fieldWithPath("_links.update.href").description("수정페이지 링크")
-//                                ,
-//                                fieldWithPath("_links.profile.href").description("프로필")
+                                fieldWithPath("_links.update.href").description("수정페이지 링크"),
+                                fieldWithPath("_links.profile.href").description("프로필")
+                        ),
+                        relaxedResponseFields(
+                                fieldWithPath("_embedded.game[].id").description("경기 식별자")
                         )
                 ));
     }
@@ -108,7 +110,7 @@ class GameControllerTest extends BaseControllerTest {
     public void queryListTest()throws Exception{
 
         mockMvc.perform(get("/api/game/")
-                    .param("startDate", "2023-01-01T00:00:00")          //페이지 0 부터 시작 -> 1은 두번째 페이지
+                    .param("startDate", "2023-01-01T00:00:00")
                     .param("endDate", "2023-03-01T00:00:00")
                     .param("searchTxt", "대교리")
                 )
@@ -121,26 +123,19 @@ class GameControllerTest extends BaseControllerTest {
                                 Preprocessors.modifyUris()
                                         .scheme("https")
                                         .host("sejong-parkgolf.com")
-
+                                        .removePort()
                         ),
                         requestParameters(
-                                parameterWithName("startDate").optional().description("페이지 번호"),
-                                parameterWithName("endDate").optional().description("페이지 사이즈"),
-                                parameterWithName("searchTxt").optional().description("페이지 사이즈")
+                                parameterWithName("startDate").optional().description("검색 시작일"),
+                                parameterWithName("endDate").optional().description("검색 종료일"),
+                                parameterWithName("searchTxt").optional().description("검색어"),
+                                parameterWithName("page").optional().description("페이지 번호"),
+                                parameterWithName("size").optional().description("페이지 사이즈")
                         ),
                         links(
                                 linkWithRel("profile").description("프로필"),
                                 linkWithRel("self").description("현재페이지 링크")
                         )
-//                        ,
-//                        relaxedRequestFields(
-//                                fieldWithPath("startDate").description("검색기간 시작일"),
-//                                fieldWithPath("endDate").description("검색기간 종료일"),
-//                                fieldWithPath("searchTxt").description("검색어")
-//                        )
-//                        ,relaxedResponseFields(
-//                                fieldWithPath("_embedded.game[].id").description("게시글의 식별자")
-//                        )
                 ));
 
     }

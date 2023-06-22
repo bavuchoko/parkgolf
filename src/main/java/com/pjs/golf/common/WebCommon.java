@@ -9,6 +9,8 @@ import org.springframework.validation.Errors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.time.LocalDateTime;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @Component
@@ -55,6 +57,26 @@ public class WebCommon {
      * */
     public static  <T> ResponseEntity<EntityModel<Errors>> badRequest(Errors errors,  Class<T> clazz) {
         return ResponseEntity.badRequest().body(EntityModel.of(errors).add(linkTo(clazz).slash("/").withRel("redirect")));
+    }
+
+
+    /**
+     * localDate 형식으로 넘어온 String을 localDateTime 으로 형변환 하기
+     */
+    public static LocalDateTime localDateToLocalDateTime(String date, String type) {
+        String time = "";
+        if ("startDate".equals(type)) {
+            time ="00:00:00";
+        } else if ("endDate".equals(type)) {
+            time ="59:59:59";
+        }
+
+        String[] dateArr = date.split("T");
+
+        if(dateArr.length>1 && !StringUtils.hasText(dateArr[1])){
+            date = date +time;
+        }
+        return LocalDateTime.parse(date);
     }
 
 }

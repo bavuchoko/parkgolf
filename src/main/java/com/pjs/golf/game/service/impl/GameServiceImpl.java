@@ -3,20 +3,13 @@ package com.pjs.golf.game.service.impl;
 import com.pjs.golf.common.dto.SearchDto;
 import com.pjs.golf.common.exception.NoSuchDataCustomException;
 import com.pjs.golf.game.entity.Game;
-import com.pjs.golf.game.entity.QGame;
 import com.pjs.golf.game.repository.GameJpaRepository;
 import com.pjs.golf.game.repository.querydsl.GameJpaQuerydslSupport;
 import com.pjs.golf.game.service.GameService;
-import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +32,11 @@ public class GameServiceImpl implements GameService {
     @Override
     public Game createGame(Game game) {
         return gameJpaRepository.save(game);
+    }
+
+    @Override
+    public Game updateGame(Game game) {
+        return null;
     }
 
 

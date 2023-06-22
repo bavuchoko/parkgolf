@@ -542,19 +542,19 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>address</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong>true</strong></code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">경기장 주소</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>detail</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong>true</strong></code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">경기 상세 내용</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>playDate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong>true</strong></code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">경기 일자</p></td>
 </tr>
 </tbody>
@@ -566,7 +566,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ curl 'https://sejong-parkgolf.com/api/game' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJqb2luRGF0ZSI6IjIwMjMtMDYtMjJUMTE6MTc6MTYuMjUzMTg2IiwiZ2VuZGVyIjoiTUFMRSIsImF1dGgiOiJST0xFX1VTRVIiLCJuYW1lIjoi7J2066aEMSIsImJpcnRoIjoiNjAwMTAxMSIsInVzZXJuYW1lIjoiOTMwMTIzNDU2OTAiLCJpYXQiOjE2ODc0MDAyMzYsImV4cCI6MTY4NzQ4NjYzNn0.JQjTZF4vMJrxOx9XtvrxMMy1xa4TTW3nyzx0_R4V7WSAqEJeq1hclaACqjki87AAgFUfS9foTRvu2fOcsfsA5w' \
+    -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJqb2luRGF0ZSI6IjIwMjMtMDYtMjJUMTE6MTc6NTYuMjcxMzM5IiwiZ2VuZGVyIjoiTUFMRSIsImF1dGgiOiJST0xFX1VTRVIiLCJuYW1lIjoi7J2066aEMSIsImJpcnRoIjoiNjAwMTAxMSIsInVzZXJuYW1lIjoiOTMwMTIzNDU2OTAiLCJpYXQiOjE2ODc0MDAyNzYsImV4cCI6MTY4NzQ4NjY3Nn0.jcZw5I_yyDWDZ_Py9E1BYOzFak7iZWEyYwREYlMIrce8z1sJR-RonGWqBrzWVYFASthzT_6M9bmqTXlEkb3ilQ' \
     -H 'Accept: application/hal+json' \
     -d '{
   "id" : null,
@@ -587,7 +587,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/game HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJqb2luRGF0ZSI6IjIwMjMtMDYtMjJUMTE6MTc6MTYuMjUzMTg2IiwiZ2VuZGVyIjoiTUFMRSIsImF1dGgiOiJST0xFX1VTRVIiLCJuYW1lIjoi7J2066aEMSIsImJpcnRoIjoiNjAwMTAxMSIsInVzZXJuYW1lIjoiOTMwMTIzNDU2OTAiLCJpYXQiOjE2ODc0MDAyMzYsImV4cCI6MTY4NzQ4NjYzNn0.JQjTZF4vMJrxOx9XtvrxMMy1xa4TTW3nyzx0_R4V7WSAqEJeq1hclaACqjki87AAgFUfS9foTRvu2fOcsfsA5w
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJqb2luRGF0ZSI6IjIwMjMtMDYtMjJUMTE6MTc6NTYuMjcxMzM5IiwiZ2VuZGVyIjoiTUFMRSIsImF1dGgiOiJST0xFX1VTRVIiLCJuYW1lIjoi7J2066aEMSIsImJpcnRoIjoiNjAwMTAxMSIsInVzZXJuYW1lIjoiOTMwMTIzNDU2OTAiLCJpYXQiOjE2ODc0MDAyNzYsImV4cCI6MTY4NzQ4NjY3Nn0.jcZw5I_yyDWDZ_Py9E1BYOzFak7iZWEyYwREYlMIrce8z1sJR-RonGWqBrzWVYFASthzT_6M9bmqTXlEkb3ilQ
 Accept: application/hal+json
 Content-Length: 207
 Host: sejong-parkgolf.com
@@ -637,10 +637,10 @@ Content-Length: 688
     "name" : "이름1",
     "gender" : "MALE",
     "protrait" : null,
-    "joinDate" : "2023-06-22 11:17:16",
+    "joinDate" : "2023-06-22 11:17:56",
     "roles" : [ "USER" ]
   },
-  "createDate" : "2023-06-22T11:17:16.6183304",
+  "createDate" : "2023-06-22T11:17:56.6339513",
   "playDate" : "2023-10-15T14:30:00",
   "address" : "경기 주소",
   "playerCount" : 0,

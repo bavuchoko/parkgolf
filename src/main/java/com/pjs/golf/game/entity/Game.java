@@ -30,6 +30,8 @@ public class Game {
 
     @Column(nullable = false)
     private LocalDateTime createDate;
+    @Column(nullable = false)
+    private LocalDateTime modifyDate;
 
     @Column(nullable = false)
     private LocalDateTime playDate;

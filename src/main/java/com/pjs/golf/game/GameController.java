@@ -17,6 +17,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.NoSuchElementException;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -54,8 +56,8 @@ public class GameController {
             @CurrentUser Account account
     ){
         SearchDto search = SearchDto.builder()
-                .startDate(LocalDateTime.parse(startDate))
-                .endDate(LocalDateTime.parse(endDate))
+                .startDate((WebCommon.localDateToLocalDateTime(startDate,"startDate")))
+                .endDate((WebCommon.localDateToLocalDateTime(startDate,"endDate")))
                 .SearchTxt(searchTxt)
                 .build();
 
@@ -65,7 +67,7 @@ public class GameController {
                         .add(linkTo(GameController.class).slash(entity.getPlayDate()).withRel("query-content"))
                         .add(linkTo(GameController.class).withSelfRel())
         );
-        pageResources.add(Link.of("/docs/ascidoc/index.html##_경기_목록_조회").withRel("profile"));
+        pageResources.add(Link.of("/docs/asciidoc/index.html#create-game-api").withRel("profile"));
 
         return ResponseEntity.ok().body(pageResources);
     }
@@ -88,7 +90,7 @@ public class GameController {
             WebMvcLinkBuilder selfLink = linkTo(GameController.class).slash(game.getId());
             EntityModel resource = EntityModel.of(game);
 
-            resource.add(Link.of("/docs/asciidoc/api.html#").withRel("profile"));
+            resource.add(Link.of("/docs/asciidoc/index.html#create-game-api").withRel("profile"));
             resource.add(selfLink.withRel("query"));
             if (game.getOpener().equals(account)) {
                 resource.add(selfLink.withRel("update"));
@@ -102,6 +104,7 @@ public class GameController {
     /**
      * 경기 등록
      * @return 200 | 400
+     * @param gameDto GameDto
      * */
 
     @PostMapping
@@ -123,22 +126,53 @@ public class GameController {
             WebMvcLinkBuilder selfLink = linkTo(GameController.class).slash(game.getId());
             EntityModel resource = EntityModel.of(savedGame);
             URI uri = selfLink.toUri();
+
             resource.add(selfLink.withRel("self"));
-            if (game.getOpener().equals(account)) {
-                resource.add(selfLink.withRel("update"));
-            }
+            resource.add(selfLink.withRel("update"));
             resource.add(Link.of("/docs/asciidoc/api.html#").withRel("profile"));
+
             return ResponseEntity.created(uri).body(resource);
+
         }catch (Exception e){
-            return ResponseEntity.internalServerError().build();
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
-    @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    public ResponseEntity updateGame(@PathVariable int id){
 
-        return null;
+    /**
+     *  경기 수정
+     * @return 200 | 400
+     * */
+    @PutMapping()
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public ResponseEntity updateGame(
+            @RequestBody GameDto gameDto,
+            Errors errors,
+            @CurrentUser Account account
+    ){
+        if (errors.hasErrors()) {
+            return WebCommon.badRequest(errors, this.getClass());
+        }
+        if(account.equals(gameDto.getOpener())) {
+            gameDto.setOpener(account);
+            gameDto.setModifyDate(LocalDateTime.now());
+            Game game = gameDto.toEntity();
+            try {
+                Game updatedGame = gameService.updateGame(game);
+                WebMvcLinkBuilder selfLink = linkTo(GameController.class).slash(game.getId());
+                EntityModel resource = EntityModel.of(updatedGame);
+
+                resource.add(selfLink.withRel("self"));
+                resource.add(selfLink.withRel("update"));
+                resource.add(Link.of("/docs/asciidoc/api.html#").withRel("profile"));
+
+                return ResponseEntity.ok().body(resource);
+
+            }catch (Exception e){
+                return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }else {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
     }
 
 

@@ -17,4 +17,6 @@ public interface GameService {
     Page<Game> getGameList(SearchDto search, Pageable pageable);
 
     Game createGame(Game game);
+
+    Game updateGame(Game game);
 }

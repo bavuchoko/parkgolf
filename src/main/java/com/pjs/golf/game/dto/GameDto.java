@@ -25,6 +25,8 @@ public class GameDto {
     @NotNull
     private LocalDateTime playDate;
 
+    private LocalDateTime modifyDate;
+
     @NotNull
     private String address;
     private int playerCount;
