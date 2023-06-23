@@ -37,7 +37,7 @@ import java.util.Set;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
-@RequestMapping(value = "/user",  produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(value = "/api/user",  produces = MediaTypes.HAL_JSON_VALUE)
 @RequiredArgsConstructor
 public class AccountController {
 

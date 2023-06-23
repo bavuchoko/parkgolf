@@ -1,8 +1,10 @@
 package com.pjs.golf.game.repository.querydsl;
 
 import com.pjs.golf.common.dto.SearchDto;
+import com.pjs.golf.common.jpa.QuerydslCommonMethod;
 import com.pjs.golf.game.entity.Game;
 import com.pjs.golf.game.entity.QGame;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -35,7 +37,10 @@ public class GameJpaQuerydslSupport extends QuerydslRepositorySupport {
                 eqAddress(search.getSearchTxt()),
                 likeDetail(search.getSearchTxt()),
                 game.playDate.between(search.getStartDate(),search.getEndDate())
-        );
+                )
+                .orderBy(QuerydslCommonMethod.getOrderList(pageable.getSort(), Game.class).stream().toArray(OrderSpecifier[]::new))
+                .limit(pageable.getPageSize())
+                ;
         long totalCount = query.stream().count();
         List<Game> result = getQuerydsl().applyPagination(pageable,query).fetch();
         return new PageImpl<>(result,pageable,totalCount);

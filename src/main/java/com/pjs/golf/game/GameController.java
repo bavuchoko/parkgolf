@@ -25,8 +25,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.NoSuchElementException;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -37,6 +35,7 @@ public class GameController {
 
     private final GameService gameService;
 
+    private final WebCommon webCommon;
 
     /**
      * 목록조회
@@ -56,8 +55,8 @@ public class GameController {
             @CurrentUser Account account
     ){
         SearchDto search = SearchDto.builder()
-                .startDate((WebCommon.localDateToLocalDateTime(startDate,"startDate")))
-                .endDate((WebCommon.localDateToLocalDateTime(startDate,"endDate")))
+                .startDate((webCommon.localDateToLocalDateTime(startDate,"startDate")))
+                .endDate((webCommon.localDateToLocalDateTime(startDate,"endDate")))
                 .SearchTxt(searchTxt)
                 .build();
 
@@ -115,7 +114,7 @@ public class GameController {
             @CurrentUser Account account){
 
         if (errors.hasErrors()) {
-            return WebCommon.badRequest(errors, this.getClass());
+            return webCommon.badRequest(errors, this.getClass());
         }
 
         gameDto.setOpener(account);
@@ -150,7 +149,7 @@ public class GameController {
             @CurrentUser Account account
     ){
         if (errors.hasErrors()) {
-            return WebCommon.badRequest(errors, this.getClass());
+            return webCommon.badRequest(errors, this.getClass());
         }
         if(account.equals(gameDto.getOpener())) {
             gameDto.setOpener(account);

@@ -48,6 +48,9 @@ public class TokenManagerImpl implements TokenManager, InitializingBean {
     @Autowired
     AccountJpaRepository accountJpaRepository;
 
+    @Autowired
+    WebCommon webCommon;
+
     public TokenManagerImpl(
             @Value("${spring.jwt.secret}") String secret,
             @Value("${spring.jwt.token-validity-in-seconds}") long tokenValidityInSeconds) {
@@ -99,7 +102,7 @@ public class TokenManagerImpl implements TokenManager, InitializingBean {
         //쿠키에서 갱신토큰 꺼냄
         String refreshTokenInCookie = cookieUtil.getCookie(request, TokenType.REFRESH_TOKEN.getValue()).getValue();
         //클라이언트 ip
-        String clientIP = WebCommon.getClientIp(request);
+        String clientIP = webCommon.getClientIp(request);
         if (validateToken(refreshTokenInCookie)) {
             String storedIP = redisUtil.getData(refreshTokenInCookie);
             //갱신토큰을 Key로 redis에서 조회한 Ip 와 갱신 요청한 클라이언트 Ip 가 같으면 인증객체를 새로 생성

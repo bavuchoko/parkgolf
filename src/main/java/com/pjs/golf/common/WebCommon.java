@@ -10,6 +10,8 @@ import org.springframework.validation.Errors;
 import javax.servlet.http.HttpServletRequest;
 
 import java.time.LocalDateTime;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -32,7 +34,7 @@ public class WebCommon {
      * localhost에서 테스트 하는 경우 0:0:0:0:0:0:0:1 값으로 넘어오는 경우 이 값은  IPv6 에서 IPv4의 127.0.0.1 과 같은 값임.
      * Tomcat으로 개발시 문제가 되는 경우 vs arguments에 -Djava.net.preferIPv4Stack=true 값을 넣어준다.
     * */
-    public static String getClientIp(HttpServletRequest request) {
+    public String getClientIp(HttpServletRequest request) {
         String ip = request.getHeader("X-Forwarded-For");
 
         if(!StringUtils.hasText(ip) || "unknown".equalsIgnoreCase(ip)){
@@ -55,7 +57,7 @@ public class WebCommon {
     /**
      *  Dto 유효성 검증 실패시 에러 return
      * */
-    public static  <T> ResponseEntity<EntityModel<Errors>> badRequest(Errors errors,  Class<T> clazz) {
+    public <T> ResponseEntity<EntityModel<Errors>> badRequest(Errors errors,  Class<T> clazz) {
         return ResponseEntity.badRequest().body(EntityModel.of(errors).add(linkTo(clazz).slash("/").withRel("redirect")));
     }
 
@@ -63,20 +65,35 @@ public class WebCommon {
     /**
      * localDate 형식으로 넘어온 String을 localDateTime 으로 형변환 하기
      */
-    public static LocalDateTime localDateToLocalDateTime(String date, String type) {
+    public LocalDateTime localDateToLocalDateTime(String date, String type) {
         String time = "";
         if ("startDate".equals(type)) {
-            time ="00:00:00";
+            time ="T00:00:00";
         } else if ("endDate".equals(type)) {
-            time ="59:59:59";
+            time ="T23:59:59";
         }
 
-        String[] dateArr = date.split("T");
+        String[] dateArr = date.split("T",2);
 
-        if(dateArr.length>1 && !StringUtils.hasText(dateArr[1])){
-            date = date +time;
+        // T이후 붙는 시간이 없을때
+        if(dateArr.length == 1) date = date +time;
+
+        // T이후 붙는 시간형태가 이상할 때
+        if(dateArr.length>1){
+            if(!timePattern(dateArr[1])){
+                date = dateArr[0] + time;
+            }
         }
+
         return LocalDateTime.parse(date);
+    }
+
+
+    private boolean timePattern(String timeTxt) {
+        String pattern = "\\b\\d{2}:\\d{2}:\\d{2}\\b";
+        Pattern regex = Pattern.compile(pattern);
+        Matcher matcher = regex.matcher(timeTxt);
+        return matcher.matches();
     }
 
 }
