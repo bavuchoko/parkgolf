@@ -8,7 +8,9 @@ import com.pjs.golf.common.dto.SearchDto;
 import com.pjs.golf.common.exception.NoSuchDataCustomException;
 import com.pjs.golf.game.dto.GameDto;
 import com.pjs.golf.game.entity.Game;
+import com.pjs.golf.game.entity.Score;
 import com.pjs.golf.game.service.GameService;
+import com.pjs.golf.game.service.ScoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -34,6 +37,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 public class GameController {
 
     private final GameService gameService;
+    private final ScoreService scoreService;
 
     private final WebCommon webCommon;
 
@@ -176,16 +180,19 @@ public class GameController {
 
 
     @GetMapping("/{id}/enroll")
-    public ResponseEntity getPlayers(@PathVariable int id){
+    public ResponseEntity getPlayers(
+            @PathVariable int id){
 
         return null;
     }
 
     @PostMapping("/{id}/enroll")
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    public ResponseEntity enroll(@PathVariable int id){
-
-        return null;
+    public ResponseEntity enroll(
+            @PathVariable int id,
+            @CurrentUser Account account){
+        List playerList = scoreService.enrollToGame(id, account);
+        return ResponseEntity.ok(playerList);
     }
 
 

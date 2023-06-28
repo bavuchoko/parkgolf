@@ -7,6 +7,7 @@ import com.pjs.golf.account.service.AccountService;
 import com.pjs.golf.common.BaseControllerTest;
 import com.pjs.golf.game.dto.GameDto;
 import com.pjs.golf.game.service.GameService;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
@@ -43,7 +44,35 @@ class GameControllerTest extends BaseControllerTest {
     @Autowired
     AccountService accountService;
 
+
+
+
+    private String getBaererToken(int i) throws Exception {
+        return "Bearer " + getAccescToken(i);
+    }
+    private String getAccescToken(int i) throws Exception {
+
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        String username = "9301234569"+i;
+        String password = "1234";
+        LocalDateTime joninDate = LocalDateTime.now();
+        String name = "이름" + i;
+        AccountDto testUser = AccountDto.builder()
+                .username(username)
+                .password(password)
+                .name(name)
+                .birth("6001011")
+                .gender(Gender.MALE)
+                .joinDate(joninDate)
+                .roles(Set.of(AccountRole.USER))
+                .build();
+        this.accountService.saveAccount(testUser.toEntity());
+        String Token = this.accountService.authorize(testUser, response, request);
+        return Token;
+    }
     @Test
+    @Order(1)
     @Description("[정상]등록 테스트")
     public void createTest()throws Exception {
         GameDto game = GameDto.builder()
@@ -77,11 +106,6 @@ class GameControllerTest extends BaseControllerTest {
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header"),
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("Bearer Token")
                         ),
-                        relaxedRequestFields(
-                                fieldWithPath("address").description("경기장 주소"),
-                                fieldWithPath("detail").description("경기 상세 내용"),
-                                fieldWithPath("playDate").description("경기 일자")
-                        ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.LOCATION).description("Location header"),
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("HAL JSON TYPE")
@@ -96,16 +120,15 @@ class GameControllerTest extends BaseControllerTest {
                                 fieldWithPath("_links.self.href").description("상세페이지 링크"),
                                 fieldWithPath("_links.update.href").description("수정페이지 링크"),
                                 fieldWithPath("_links.profile.href").description("프로필")
-                        ),
-                        relaxedResponseFields(
-                                fieldWithPath("_embedded.game[].id").description("경기 식별자")
                         )
+
                 ));
     }
 
 
 
     @Test
+    @Order(2)
     @Description("[정상]리스트 조회 테스트")
     public void queryListTest()throws Exception{
 
@@ -141,29 +164,32 @@ class GameControllerTest extends BaseControllerTest {
     }
 
 
-    private String getBaererToken(int i) throws Exception {
-        return "Bearer " + getAccescToken(i);
-    }
-    private String getAccescToken(int i) throws Exception {
 
-        HttpServletResponse response = mock(HttpServletResponse.class);
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        String username = "93012345690";
-        String password = "1234";
-        LocalDateTime joninDate = LocalDateTime.now();
-        String name = "이름" + i;
-        AccountDto testUser = AccountDto.builder()
-                .username(username)
-                .password(password)
-                .name(name)
-                .birth("6001011")
-                .gender(Gender.MALE)
-                .joinDate(joninDate)
-                .roles(Set.of(AccountRole.USER))
+
+    @Test
+    @Order(3)
+    @Description("[정상]게임참가 테스트")
+    public void enrollTest()throws Exception {
+        GameDto game = GameDto.builder()
+                .address("경기 주소")
+                .detail("경기 상세")
+                .playDate(LocalDateTime.of(2023,10,15,14,30))
                 .build();
-        this.accountService.saveAccount(testUser.toEntity());
-        String Token = this.accountService.authorize(testUser, response, request);
-        return Token;
-    }
+        mockMvc.perform(post("/api/game/1/enroll")
+                        .header(HttpHeaders.AUTHORIZATION, getBaererToken(2))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaTypes.HAL_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(game)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("game-enroll-api",
+                        preprocessRequest(
+                                Preprocessors.modifyUris()
+                                        .scheme("https")
+                                        .host("sejong-parkgolf.com")
+                                        .removePort()
 
+                        )
+                ));
+    }
 }

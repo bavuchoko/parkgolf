@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @Entity
 @Getter
@@ -30,8 +32,10 @@ public class Game {
 
     @Column(nullable = false)
     private LocalDateTime createDate;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDateTime modifyDate;
+
+    private int rounding;
 
     @Column(nullable = false)
     private LocalDateTime playDate;
@@ -47,5 +51,27 @@ public class Game {
 
     public void createdAt(LocalDateTime createDate) {
         this.createDate = createDate;
+    }
+
+    public void updateGame(Game game) {
+        this.opener = game.getOpener();
+        this.modifyDate = LocalDateTime.now();
+        this.playDate = game.getPlayDate();
+        this.address = game.getAddress();
+        this.dayKor = game.getDayKor();
+        this.detail = game.getDetail();
+    }
+
+    public List<Score> enrollToGame(Game game, Account account) {
+        List<Score> scores = new ArrayList<>();
+        IntStream.rangeClosed(1,game.getPlayerCount()).forEach(e->
+                scores.add(Score.builder()
+                        .gameId(game.getId())
+                        .player(account)
+                        .roundId(e)
+                        .build()
+                )
+        );
+        return scores;
     }
 }

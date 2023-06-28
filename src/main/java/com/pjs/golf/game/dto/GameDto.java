@@ -26,7 +26,7 @@ public class GameDto {
     private LocalDateTime playDate;
 
     private LocalDateTime modifyDate;
-
+    private int rounding;
     @NotNull
     private String address;
     private int playerCount;

@@ -11,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 @RequiredArgsConstructor
 public class GameServiceImpl implements GameService {
@@ -35,8 +37,10 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
+    @Transactional
     public Game updateGame(Game game) {
-        return null;
+        gameJpaRepository.findById(game.getId()).ifPresent(e -> e.updateGame(e));
+        return game;
     }
 
 
