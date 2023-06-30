@@ -12,9 +12,9 @@ plugins {
 	id 'org.asciidoctor.jvm.convert' version '3.3.2'
 }
 
-group = 'com.pjs'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+//group = 'com.pjs'
+//version = '0.0.1-SNAPSHOT'
+//sourceCompatibility = '11'
 
 configurations {
 	compileOnly {
@@ -100,6 +100,9 @@ asciidoctor {
 // bootjar과 관련된 설정이며, 스니펫을 이용해 문서 작성 후,
 // build - docs - asciidoc 하위에 생기는 html 파일을 BOOT-INF/classes/static/docs로 복사해줍니다.
 bootJar {
+	archivesBaseName = 'parkgolf'
+	archiveFileName = 'parkgolf.jar'
+	archiveVersion = "0.0.1"
 	dependsOn asciidoctor
 	copy {
 		from "${asciidoctor.outputDir}"
