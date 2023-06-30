@@ -83,7 +83,7 @@ public class AccountController {
 
 
     //회원가입
-    @PostMapping("/api/create")
+    @PostMapping("/create")
     public ResponseEntity creatAccount(
             @Valid @RequestBody AccountDto accountDto,
             Errors errors,
