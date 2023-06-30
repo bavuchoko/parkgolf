@@ -48,7 +48,6 @@ public class AccountController {
 
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity loadUserList(Pageable pageable, PagedResourcesAssembler<Account> assembler){
 
         Page<Account> page = accountService.loadUserList(pageable);
