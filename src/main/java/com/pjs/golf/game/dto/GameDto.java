@@ -19,7 +19,8 @@ public class GameDto {
     private Integer id;
 
     private Account opener;
-
+    @NotNull
+    private String title;
     private LocalDateTime createDate;
 
     @NotNull

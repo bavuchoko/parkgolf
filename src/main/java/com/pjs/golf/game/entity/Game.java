@@ -26,6 +26,8 @@ public class Game {
     @Column(name = "game_id")
     private Integer id;
 
+    @Column(nullable = false)
+    private String title;
     @ManyToOne
     @JoinColumn(name = "account_id")
     private Account opener;
