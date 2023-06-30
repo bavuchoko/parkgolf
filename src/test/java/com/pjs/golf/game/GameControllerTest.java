@@ -76,6 +76,7 @@ class GameControllerTest extends BaseControllerTest {
     @Description("[정상]등록 테스트")
     public void createTest()throws Exception {
         GameDto game = GameDto.builder()
+                .title("제목이 매우 길어서 20자를 넘으면 어떻게 될지에 대해서 궁금해서 시도해 보았습니다.")
                 .address("경기 주소")
                 .detail("경기 상세")
                 .playDate(LocalDateTime.of(2023,10,15,14,30))
@@ -113,6 +114,7 @@ class GameControllerTest extends BaseControllerTest {
                         relaxedResponseFields(
                                 //                          responseFields(
                                 fieldWithPath("id").description("등록 경기 식별자"),
+                                fieldWithPath("title").description("경기 제목"),
                                 fieldWithPath("address").description("경기장 주소"),
                                 fieldWithPath("detail").description("경기 상세 내용"),
                                 fieldWithPath("createDate").description("경기 등록 일자"),
