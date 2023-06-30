@@ -73,6 +73,13 @@ public class WebCommon {
             time ="T23:59:59";
         }
 
+        if(!StringUtils.hasText(date)){
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime lastAWeek = now.minusWeeks(1);
+            LocalDateTime afterAWeek = now.plusWeeks(1);
+            return "startDate".equals(type) ? lastAWeek : afterAWeek;
+        }
+
         String[] dateArr = date.split("T",2);
 
         // T이후 붙는 시간이 없을때
