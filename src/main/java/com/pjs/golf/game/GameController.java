@@ -60,7 +60,7 @@ public class GameController {
     ){
         SearchDto search = SearchDto.builder()
                 .startDate((webCommon.localDateToLocalDateTime(startDate,"startDate")))
-                .endDate((webCommon.localDateToLocalDateTime(startDate,"endDate")))
+                .endDate((webCommon.localDateToLocalDateTime(endDate,"endDate")))
                 .SearchTxt(searchTxt)
                 .build();
 

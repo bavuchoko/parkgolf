@@ -25,7 +25,7 @@ public class GameJpaQuerydslSupport extends QuerydslRepositorySupport {
     private final EntityManager entityManage;
 
     public GameJpaQuerydslSupport(JPAQueryFactory jpaQueryFactory, EntityManager entityManage, EntityManager entityManager) {
-        super(Store.class);
+        super(Game.class);
         this.queryFactory = jpaQueryFactory;
         this.entityManage = entityManage;
     }
