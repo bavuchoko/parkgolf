@@ -8,9 +8,12 @@ import org.springframework.http.ResponseEntity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.IntStream;
 
 @Entity
@@ -28,38 +31,34 @@ public class Game {
 
     @Column(nullable = false)
     private String title;
+
     @ManyToOne
-    @JoinColumn(name = "account_id")
+    @JoinColumn(name = "opener_id")
     private Account opener;
+
+    @ManyToOne
+    @JoinColumn(name = "field_id")
+    private Field field;
 
     @Column(nullable = false)
     private LocalDateTime createDate;
     @Column(nullable = true)
     private LocalDateTime modifyDate;
-
-    private int rounding;
-
     @Column(nullable = false)
     private LocalDateTime playDate;
-    @Column(nullable = false)
-    private String address;
+
+    @ManyToMany
+    private List<Account> players;
+
+    private int rounding;
     private int playerCount;
     private String dayKor;
     private String detail;
-
-    public void opener(Account opener) {
-        this.opener = opener;
-    }
-
-    public void createdAt(LocalDateTime createDate) {
-        this.createDate = createDate;
-    }
 
     public void updateGame(Game game) {
         this.opener = game.getOpener();
         this.modifyDate = LocalDateTime.now();
         this.playDate = game.getPlayDate();
-        this.address = game.getAddress();
         this.dayKor = game.getDayKor();
         this.detail = game.getDetail();
     }
@@ -70,7 +69,6 @@ public class Game {
                 scores.add(Score.builder()
                         .gameId(game.getId())
                         .player(account)
-                        .roundId(e)
                         .build()
                 )
         );

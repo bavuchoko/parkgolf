@@ -123,6 +123,7 @@ public class GameController {
 
         gameDto.setOpener(account);
         gameDto.setCreateDate(LocalDateTime.now());
+        gameDto.whatIsDay(gameDto.getPlayDate());
         Game game = gameDto.toEntity();
         try{
             Game savedGame = gameService.createGame(game);

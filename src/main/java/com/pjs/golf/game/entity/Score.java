@@ -38,6 +38,8 @@ public class Score {
 
     private int hit;  //타수
 
+    private int point;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime playDate;
 

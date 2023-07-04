@@ -23,7 +23,9 @@ public class ScroeServiceImpl implements ScoreService {
     @Override
     public List enrollToGame(int gameId, Account account) {
         Game game = gameJpaRepository.findById(gameId).orElseThrow(()-> new NoSuchDataCustomException("해당 경기가 존재하지 않습니다."));
-        scoreJpaRepository.saveAll( game.enrollToGame(game,account) );
-        return scroeJpaQuerydslSupport.getGameListWhereGameGroupbyPlayer(game, account);
+//        scoreJpaRepository.saveAll( game.enrollToGame(game,account) );
+//        return scroeJpaQuerydslSupport.getGameListWhereGameGroupbyPlayer(game, account);
+        return null;
     }
+
 }

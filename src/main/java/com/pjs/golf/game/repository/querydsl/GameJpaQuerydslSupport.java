@@ -51,11 +51,11 @@ public class GameJpaQuerydslSupport extends QuerydslRepositorySupport {
 //    }
 
     private BooleanExpression eqAddress(String address) {
-        if (StringUtils.hasText(address)) return game.address.eq(address);
+        if (StringUtils.hasText(address)) return game.field.address.eq(address);
         return null;
     }
     private BooleanExpression likeDetail(String detail) {
-        if (StringUtils.hasText(detail)) return game.address.contains(detail);
+        if (StringUtils.hasText(detail)) return game.detail.contains(detail);
         return null;
     }
 }

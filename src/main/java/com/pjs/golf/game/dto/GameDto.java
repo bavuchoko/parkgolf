@@ -2,12 +2,16 @@ package com.pjs.golf.game.dto;
 
 import com.pjs.golf.account.entity.Account;
 import com.pjs.golf.common.ModelMapperUtils;
+import com.pjs.golf.game.entity.Field;
 import com.pjs.golf.game.entity.Game;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.format.TextStyle;
 import java.util.List;
+import java.util.Locale;
 
 @Getter
 @Setter
@@ -18,21 +22,29 @@ public class GameDto {
 
     private Integer id;
 
-    private Account opener;
     @NotNull
     private String title;
+
+    private Account opener;
+
+    private Field field;
+
     private LocalDateTime createDate;
 
+    private LocalDateTime modifyDate;
     @NotNull
     private LocalDateTime playDate;
 
-    private LocalDateTime modifyDate;
     private int rounding;
-    @NotNull
-    private String address;
     private int playerCount;
     private String dayKor;
     private String detail;
+
+    public void whatIsDay(LocalDateTime time) {
+        DayOfWeek dayOfWeek = time.getDayOfWeek();
+        this.dayKor = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.KOREAN);
+    }
+
 
     public Game toEntity() {
         return ModelMapperUtils.getModelMapper().map(this, Game.class);
