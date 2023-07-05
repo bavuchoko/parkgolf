@@ -2,7 +2,7 @@ package com.pjs.golf.game.dto;
 
 import com.pjs.golf.account.entity.Account;
 import com.pjs.golf.common.ModelMapperUtils;
-import com.pjs.golf.field.entity.Field;
+import com.pjs.golf.fields.entity.Fields;
 import com.pjs.golf.game.entity.Game;
 import lombok.*;
 
@@ -26,7 +26,7 @@ public class GameDto {
 
     private Account opener;
 
-    private Field field;
+    private Fields fields;
 
     private LocalDateTime createDate;
 

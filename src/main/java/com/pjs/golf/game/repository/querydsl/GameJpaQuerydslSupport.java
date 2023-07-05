@@ -24,7 +24,7 @@ public class GameJpaQuerydslSupport extends QuerydslRepositorySupport {
     private final JPAQueryFactory queryFactory;
     private final EntityManager entityManage;
 
-    public GameJpaQuerydslSupport(JPAQueryFactory jpaQueryFactory, EntityManager entityManage, EntityManager entityManager) {
+    public GameJpaQuerydslSupport(JPAQueryFactory jpaQueryFactory, EntityManager entityManage) {
         super(Game.class);
         this.queryFactory = jpaQueryFactory;
         this.entityManage = entityManage;
@@ -51,7 +51,7 @@ public class GameJpaQuerydslSupport extends QuerydslRepositorySupport {
 //    }
 
     private BooleanExpression eqAddress(String address) {
-        if (StringUtils.hasText(address)) return game.field.address.eq(address);
+        if (StringUtils.hasText(address)) return game.fields.address.eq(address);
         return null;
     }
     private BooleanExpression likeDetail(String detail) {

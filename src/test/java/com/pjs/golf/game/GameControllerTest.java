@@ -5,7 +5,7 @@ import com.pjs.golf.account.entity.AccountRole;
 import com.pjs.golf.account.entity.Gender;
 import com.pjs.golf.account.service.AccountService;
 import com.pjs.golf.common.BaseControllerTest;
-import com.pjs.golf.field.entity.Field;
+import com.pjs.golf.fields.entity.Fields;
 import com.pjs.golf.game.dto.GameDto;
 import com.pjs.golf.game.service.GameService;
 import org.junit.jupiter.api.Order;
@@ -76,14 +76,14 @@ class GameControllerTest extends BaseControllerTest {
     @Order(1)
     @Description("[정상]등록 테스트")
     public void createTest()throws Exception {
-        Field field =Field.builder()
+        Fields fields = Fields.builder()
                 .holes(9)
                 .address("경기 주소")
                 .build();
 
         GameDto game = GameDto.builder()
                 .title("제목이 매우 길어서 20자를 넘으면 어떻게 될지에 대해서 궁금해서 시도해 보았습니다.")
-                .field(field)
+                .fields(fields)
                 .detail("경기 상세")
                 .playDate(LocalDateTime.of(2023,10,15,14,30))
                 .build();

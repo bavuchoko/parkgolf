@@ -1,10 +1,9 @@
-package com.pjs.golf.field.entity;
+package com.pjs.golf.fields.entity;
 
 
 import com.pjs.golf.account.entity.Account;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
-import reactor.util.annotation.Nullable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -15,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of="id")
-public class Field {
+public class Fields {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY )

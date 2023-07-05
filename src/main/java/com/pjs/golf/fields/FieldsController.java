@@ -1,14 +1,11 @@
-package com.pjs.golf.field;
+package com.pjs.golf.fields;
 
 import com.pjs.golf.account.entity.Account;
 import com.pjs.golf.common.WebCommon;
 import com.pjs.golf.common.annotation.CurrentUser;
-import com.pjs.golf.common.dto.SearchDto;
-import com.pjs.golf.field.dto.FieldDto;
-import com.pjs.golf.field.entity.Field;
-import com.pjs.golf.field.service.FieldService;
-import com.pjs.golf.game.GameController;
-import com.pjs.golf.game.dto.GameDto;
+import com.pjs.golf.fields.dto.FieldsDto;
+import com.pjs.golf.fields.entity.Fields;
+import com.pjs.golf.fields.service.FieldsService;
 import com.pjs.golf.game.entity.Game;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,31 +22,27 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.time.LocalDateTime;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
 @RequestMapping(value = "/api/field",  produces = MediaTypes.HAL_JSON_VALUE)
 @RequiredArgsConstructor
-public class FieldController {
+public class FieldsController {
 
-    private final FieldService fieldService;
+    private final FieldsService fieldService;
     private final WebCommon webCommon;
     @GetMapping
-    public ResponseEntity getGameList(
+    public ResponseEntity getFieldList(
             Pageable pageable,
             @RequestParam(required = false) String city,
-            PagedResourcesAssembler<Game> assembler
+            PagedResourcesAssembler<Fields> assembler
     ){
-        SearchDto search = SearchDto.builder()
-                .build();
-
-        Page<Game> games = fieldService.getFieldList(search,pageable);
-        var pageResources = assembler.toModel(games, entity ->
+        Page<Fields> fields = fieldService.getFieldList(city,pageable);
+        var pageResources = assembler.toModel(fields, entity ->
                 EntityModel.of(entity)
-                        .add(linkTo(FieldController.class).slash(entity.getPlayDate()).withRel("query-content"))
-                        .add(linkTo(FieldController.class).withSelfRel())
+                        .add(linkTo(FieldsController.class).withRel("query-content"))
+                        .add(linkTo(FieldsController.class).withSelfRel())
         );
         pageResources.add(Link.of("/docs/asciidoc/index.html#create-game-api").withRel("profile"));
 
@@ -60,13 +53,13 @@ public class FieldController {
     /**
      * 필드 등록
      * @return 200 | 400
-     * @param fieldDto FieldDto
+     * @param fieldsDto FieldDto
      * */
 
     @PostMapping
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    public ResponseEntity creatGame(
-            @RequestBody FieldDto fieldDto,
+    public ResponseEntity creatField(
+            @RequestBody FieldsDto fieldsDto,
             Errors errors,
             @CurrentUser Account account){
 
@@ -74,12 +67,12 @@ public class FieldController {
             return webCommon.badRequest(errors, this.getClass());
         }
 
-        fieldDto.setRegister(account);
-        Field field = fieldDto.toEntity();
+        fieldsDto.setRegister(account);
+        Fields fields = fieldsDto.toEntity();
         try{
-            Field savedField = fieldService.createField(field);
-            WebMvcLinkBuilder selfLink = linkTo(FieldController.class).slash(field.getId());
-            EntityModel resource = EntityModel.of(savedField);
+            Fields savedFields = fieldService.createField(fields);
+            WebMvcLinkBuilder selfLink = linkTo(FieldsController.class).slash(fields.getId());
+            EntityModel resource = EntityModel.of(savedFields);
             URI uri = selfLink.toUri();
 
             resource.add(selfLink.withRel("self"));

@@ -1,7 +1,7 @@
 package com.pjs.golf.game.entity;
 
 import com.pjs.golf.account.entity.Account;
-import com.pjs.golf.field.entity.Field;
+import com.pjs.golf.fields.entity.Fields;
 import lombok.*;
 
 import javax.persistence.*;
@@ -32,7 +32,7 @@ public class Game {
 
     @ManyToOne
     @JoinColumn(name = "field_id")
-    private Field field;
+    private Fields fields;
 
     @Column(nullable = false)
     private LocalDateTime createDate;
