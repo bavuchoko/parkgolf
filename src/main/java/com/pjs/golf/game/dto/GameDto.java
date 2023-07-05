@@ -2,7 +2,7 @@ package com.pjs.golf.game.dto;
 
 import com.pjs.golf.account.entity.Account;
 import com.pjs.golf.common.ModelMapperUtils;
-import com.pjs.golf.game.entity.Field;
+import com.pjs.golf.field.entity.Field;
 import com.pjs.golf.game.entity.Game;
 import lombok.*;
 
@@ -10,7 +10,6 @@ import javax.validation.constraints.NotNull;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
-import java.util.List;
 import java.util.Locale;
 
 @Getter

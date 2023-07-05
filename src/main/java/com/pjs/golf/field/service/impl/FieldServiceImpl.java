@@ -1,9 +1,8 @@
-package com.pjs.golf.game.service.impl;
+package com.pjs.golf.field.service.impl;
 
-import com.pjs.golf.game.entity.Field;
-import com.pjs.golf.game.repository.FieldJpaRepository;
-import com.pjs.golf.game.repository.GameJpaRepository;
-import com.pjs.golf.game.service.FieldService;
+import com.pjs.golf.field.entity.Field;
+import com.pjs.golf.field.repository.FieldJpaRepository;
+import com.pjs.golf.field.service.FieldService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

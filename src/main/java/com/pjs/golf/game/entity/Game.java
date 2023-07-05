@@ -1,19 +1,13 @@
 package com.pjs.golf.game.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.pjs.golf.account.entity.Account;
+import com.pjs.golf.field.entity.Field;
 import lombok.*;
-import org.modelmapper.config.Configuration;
-import org.springframework.http.ResponseEntity;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.IntStream;
 
 @Entity
