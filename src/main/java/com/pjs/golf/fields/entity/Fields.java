@@ -2,6 +2,8 @@ package com.pjs.golf.fields.entity;
 
 
 import com.pjs.golf.account.entity.Account;
+import com.pjs.golf.common.ModelMapperUtils;
+import com.pjs.golf.fields.dto.FieldsDto;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -39,5 +41,7 @@ public class Fields {
     private LocalDateTime createDate;
     @Column(nullable = true)
     private LocalDateTime modifyDate;
-
+    public FieldsDto toDto() {
+        return ModelMapperUtils.getModelMapper().map(this, FieldsDto.class);
+    }
 }

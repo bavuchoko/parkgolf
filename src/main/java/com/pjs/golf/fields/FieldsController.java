@@ -22,6 +22,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -68,6 +69,7 @@ public class FieldsController {
         }
 
         fieldsDto.setRegister(account);
+        fieldsDto.setCreateDate(LocalDateTime.now());
         Fields fields = fieldsDto.toEntity();
         try{
             Fields savedFields = fieldService.createField(fields);
