@@ -1,11 +1,13 @@
 package com.pjs.golf.game;
 
 import com.pjs.golf.account.dto.AccountDto;
+import com.pjs.golf.account.entity.Account;
 import com.pjs.golf.account.entity.AccountRole;
 import com.pjs.golf.account.entity.Gender;
 import com.pjs.golf.account.service.AccountService;
 import com.pjs.golf.common.BaseControllerTest;
 import com.pjs.golf.fields.entity.Fields;
+import com.pjs.golf.fields.service.FieldsService;
 import com.pjs.golf.game.dto.GameDto;
 import com.pjs.golf.game.service.GameService;
 import org.junit.jupiter.api.Order;
@@ -41,6 +43,8 @@ class GameControllerTest extends BaseControllerTest {
 
     @Autowired
     GameService gameService;
+    @Autowired
+    FieldsService fieldsService;
 
     @Autowired
     AccountService accountService;
@@ -48,17 +52,17 @@ class GameControllerTest extends BaseControllerTest {
 
 
 
-    private String getBaererToken(int i) throws Exception {
-        return "Bearer " + getAccescToken(i);
-    }
-    private String getAccescToken(int i) throws Exception {
-
+    private String getBaererToken(AccountDto user) throws Exception {
         HttpServletResponse response = mock(HttpServletResponse.class);
         HttpServletRequest request = mock(HttpServletRequest.class);
-        String username = "9301234569"+i;
+        String Token = this.accountService.authorize(user, response, request);
+        return "Bearer " + Token;
+    }
+    private AccountDto createTestUser() throws Exception {
+        String username = "93012345691";
         String password = "1234";
         LocalDateTime joninDate = LocalDateTime.now();
-        String name = "이름" + i;
+        String name = "이름" ;
         AccountDto testUser = AccountDto.builder()
                 .username(username)
                 .password(password)
@@ -69,18 +73,23 @@ class GameControllerTest extends BaseControllerTest {
                 .roles(Set.of(AccountRole.USER))
                 .build();
         this.accountService.saveAccount(testUser.toEntity());
-        String Token = this.accountService.authorize(testUser, response, request);
-        return Token;
+        return testUser;
     }
     @Test
     @Order(1)
     @Description("[정상]등록 테스트")
     public void createTest()throws Exception {
+        AccountDto account =createTestUser();
+
         Fields fields = Fields.builder()
+                .name("경기장1")
+                .register(account.toEntity())
                 .holes(9)
                 .address("경기 주소")
+                .createDate(LocalDateTime.now())
                 .build();
 
+        fieldsService.createField(fields);
         GameDto game = GameDto.builder()
                 .title("제목이 매우 길어서 20자를 넘으면 어떻게 될지에 대해서 궁금해서 시도해 보았습니다.")
                 .fields(fields)
@@ -88,7 +97,7 @@ class GameControllerTest extends BaseControllerTest {
                 .playDate(LocalDateTime.of(2023,10,15,14,30))
                 .build();
         mockMvc.perform(post("/api/game")
-                        .header(HttpHeaders.AUTHORIZATION, getBaererToken(1))
+                        .header(HttpHeaders.AUTHORIZATION, getBaererToken(account))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaTypes.HAL_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(game)))
@@ -121,9 +130,11 @@ class GameControllerTest extends BaseControllerTest {
                                 //                          responseFields(
                                 fieldWithPath("id").description("등록 경기 식별자"),
                                 fieldWithPath("title").description("경기 제목"),
-                                fieldWithPath("address").description("경기장 주소"),
                                 fieldWithPath("detail").description("경기 상세 내용"),
                                 fieldWithPath("createDate").description("경기 등록 일자"),
+                                fieldWithPath("dayKor").description("경기 요일"),
+                                fieldWithPath("playerCount").description("참가자 수"),
+                                fieldWithPath("rounding").description("라운드 수"),
                                 fieldWithPath("playDate").description("경기 일자"),
                                 fieldWithPath("_links.self.href").description("상세페이지 링크"),
                                 fieldWithPath("_links.update.href").description("수정페이지 링크"),

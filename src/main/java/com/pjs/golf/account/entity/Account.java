@@ -4,6 +4,8 @@ package com.pjs.golf.account.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.pjs.golf.account.dto.AccountDto;
+import com.pjs.golf.common.ModelMapperUtils;
 import com.pjs.golf.game.entity.Game;
 import lombok.*;
 
@@ -44,9 +46,9 @@ public class Account {
     @Enumerated(EnumType.STRING)
     private Set<AccountRole> roles;
 
-
-//    @OneToMany(mappedBy = "opener", fetch=FetchType.LAZY)
-//    private List<Game> games;
+    public AccountDto toDto() {
+        return ModelMapperUtils.getModelMapper().map(this, AccountDto.class);
+    }
 
     public void overwritePassword(String password) {
         this.password = password;
