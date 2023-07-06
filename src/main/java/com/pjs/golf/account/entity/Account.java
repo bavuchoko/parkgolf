@@ -44,8 +44,6 @@ public class Account {
     @Enumerated(EnumType.STRING)
     private Set<AccountRole> roles;
 
-    @ManyToMany(mappedBy = "players")
-    private List<Game> games;
 
 //    @OneToMany(mappedBy = "opener", fetch=FetchType.LAZY)
 //    private List<Game> games;

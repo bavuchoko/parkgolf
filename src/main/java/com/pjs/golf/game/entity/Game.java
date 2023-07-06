@@ -41,7 +41,7 @@ public class Game {
     @Column(nullable = false)
     private LocalDateTime playDate;
 
-    @ManyToMany
+    @OneToMany
     private List<Account> players;
 
     private int rounding;
