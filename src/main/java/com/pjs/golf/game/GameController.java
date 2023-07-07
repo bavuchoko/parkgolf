@@ -10,30 +10,20 @@ import com.pjs.golf.common.exception.NoSuchDataCustomException;
 import com.pjs.golf.common.exception.PermissionLimitedCustomException;
 import com.pjs.golf.game.dto.GameDto;
 import com.pjs.golf.game.entity.Game;
-import com.pjs.golf.game.entity.Score;
 import com.pjs.golf.game.service.GameService;
-import com.pjs.golf.game.service.ScoreService;
+import com.pjs.golf.score.service.ScoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.redis.repository.query.ExampleQueryMapper;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
 @RequestMapping(value = "/api/game",  produces = MediaTypes.HAL_JSON_VALUE)

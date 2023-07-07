@@ -1,9 +1,9 @@
-package com.pjs.golf.game.repository.querydsl;
+package com.pjs.golf.score.repository.querydsl;
 
 import com.pjs.golf.account.entity.Account;
 import com.pjs.golf.game.entity.Game;
-import com.pjs.golf.game.entity.QScore;
-import com.pjs.golf.game.entity.Score;
+import com.pjs.golf.score.entity.QScore;
+import com.pjs.golf.score.entity.Score;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.apache.catalina.Store;
@@ -24,13 +24,6 @@ public class ScroeJpaQuerydslSupport extends QuerydslRepositorySupport {
         this.entityManage = entityManage;
     }
     QScore score = QScore.score;
-    public List<Score> getGameListWhereGameGroupbyPlayer(Game game, Account account) {
-        JPAQuery<Score> query= queryFactory.selectFrom(score).where(
-                score.gameId.eq(game.getId())
-                )
-                .groupBy(score.player)
-                ;
-        return query.fetch();
-    }
+
 
 }

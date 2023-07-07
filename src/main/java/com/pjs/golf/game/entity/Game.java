@@ -58,15 +58,4 @@ public class Game {
         this.detail = gameDto.getDetail();
     }
 
-    public List<Score> enrollToGame(Game game, Account account) {
-        List<Score> scores = new ArrayList<>();
-        IntStream.rangeClosed(1,game.getPlayerCount()).forEach(e->
-                scores.add(Score.builder()
-                        .gameId(game.getId())
-                        .player(account)
-                        .build()
-                )
-        );
-        return scores;
-    }
 }

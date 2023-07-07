@@ -1,16 +1,13 @@
-package com.pjs.golf.game.entity;
+package com.pjs.golf.score.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.pjs.golf.account.entity.Account;
-import com.pjs.golf.game.entity.id.ScoreId;
+import com.pjs.golf.score.entity.id.ScoreId;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.IntStream;
 
 @Entity
 @Getter
