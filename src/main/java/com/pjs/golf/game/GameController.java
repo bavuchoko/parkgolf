@@ -5,7 +5,9 @@ import com.pjs.golf.account.entity.Account;
 import com.pjs.golf.common.WebCommon;
 import com.pjs.golf.common.annotation.CurrentUser;
 import com.pjs.golf.common.dto.SearchDto;
+import com.pjs.golf.common.exception.AlreadyExistSuchDataCustomException;
 import com.pjs.golf.common.exception.NoSuchDataCustomException;
+import com.pjs.golf.common.exception.PermissionLimitedCustomException;
 import com.pjs.golf.game.dto.GameDto;
 import com.pjs.golf.game.entity.Game;
 import com.pjs.golf.game.entity.Score;
@@ -14,7 +16,9 @@ import com.pjs.golf.game.service.ScoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.repository.query.ExampleQueryMapper;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
@@ -65,12 +69,7 @@ public class GameController {
                 .build();
 
         Page<Game> games = gameService.getGameList(search,pageable);
-        var pageResources = assembler.toModel(games, entity ->
-                EntityModel.of(entity)
-                        .add(linkTo(GameController.class).slash(entity.getPlayDate()).withRel("query-content"))
-                        .add(linkTo(GameController.class).withSelfRel())
-        );
-        pageResources.add(Link.of("/docs/asciidoc/index.html#create-game-api").withRel("profile"));
+        CollectionModel pageResources = gameService.getPageReesources(assembler, games);
 
         return ResponseEntity.ok().body(pageResources);
     }
@@ -90,15 +89,11 @@ public class GameController {
 
         try {
             Game game = gameService.getGameInfo(id);
-            WebMvcLinkBuilder selfLink = linkTo(GameController.class).slash(game.getId());
-            EntityModel resource = EntityModel.of(game);
 
-            resource.add(Link.of("/docs/asciidoc/index.html#create-game-api").withRel("profile"));
-            resource.add(selfLink.withRel("query"));
-            if (game.getOpener().equals(account)) {
-                resource.add(selfLink.withRel("update"));
-            }
+            EntityModel resource = gameService.getPageReesource(game, account);
+
             return ResponseEntity.ok().body(resource);
+
         }catch (NoSuchDataCustomException e){
             return ResponseEntity.noContent().build();
         }
@@ -121,21 +116,10 @@ public class GameController {
             return webCommon.badRequest(errors, this.getClass());
         }
 
-        gameDto.setOpener(account);
-        gameDto.setCreateDate(LocalDateTime.now());
-        gameDto.whatIsDay(gameDto.getPlayDate());
-        Game game = gameDto.toEntity();
         try{
-            Game savedGame = gameService.createGame(game);
-            WebMvcLinkBuilder selfLink = linkTo(GameController.class).slash(game.getId());
-            EntityModel resource = EntityModel.of(savedGame);
-            URI uri = selfLink.toUri();
-
-            resource.add(selfLink.withRel("self"));
-            resource.add(selfLink.withRel("update"));
-            resource.add(Link.of("/docs/asciidoc/api.html#").withRel("profile"));
-
-            return ResponseEntity.created(uri).body(resource);
+            Game savedGame = gameService.createGame(gameDto, account);
+            EntityModel resource = gameService.getPageReesource(savedGame, account);
+            return new ResponseEntity(resource, HttpStatus.CREATED);
 
         }catch (Exception e){
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -156,43 +140,37 @@ public class GameController {
         if (errors.hasErrors()) {
             return webCommon.badRequest(errors, this.getClass());
         }
-        if(account.equals(gameDto.getOpener())) {
-            gameDto.setOpener(account);
-            gameDto.setModifyDate(LocalDateTime.now());
-            Game game = gameDto.toEntity();
-            try {
-                Game updatedGame = gameService.updateGame(game);
-                WebMvcLinkBuilder selfLink = linkTo(GameController.class).slash(game.getId());
-                EntityModel resource = EntityModel.of(updatedGame);
 
-                resource.add(selfLink.withRel("self"));
-                resource.add(selfLink.withRel("update"));
-                resource.add(Link.of("/docs/asciidoc/api.html#").withRel("profile"));
-
-                return ResponseEntity.ok().body(resource);
-
-            }catch (Exception e){
-                return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }else {
-            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        try {
+            Game updatedGame = gameService.updateGame(gameDto, account);
+            EntityModel resource = gameService.getPageReesource(updatedGame, account);
+            return ResponseEntity.ok().body(resource); // 200
+        }catch (PermissionLimitedCustomException e){
+            return new ResponseEntity(HttpStatus.FORBIDDEN); // 403
+        }catch (NoSuchDataCustomException e){
+            return new ResponseEntity(HttpStatus.NOT_FOUND); // 404
+        }catch (Exception e){
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);  // 500
         }
     }
 
-
-    @GetMapping("/{id}/enroll")
-    public ResponseEntity getPlayers(
-            @PathVariable int id){
-
-        return null;
-    }
 
     @PostMapping("/{id}/enroll")
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity enroll(
             @PathVariable int id,
             @CurrentUser Account account){
-        return null;
+        try {
+            Game enrolledGame = gameService.enrollGame(id, account);
+            EntityModel resource = gameService.getPageReesource(enrolledGame, account);
+            return ResponseEntity.ok().body(resource); // 200
+        } catch (NoSuchDataCustomException e) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND); // 404
+        } catch (AlreadyExistSuchDataCustomException e) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST); // 400
+        }catch (Exception e){
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);  // 500
+        }
     }
 
 

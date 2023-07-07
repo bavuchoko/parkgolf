@@ -1,9 +1,14 @@
 package com.pjs.golf.game.service;
 
+import com.pjs.golf.account.entity.Account;
 import com.pjs.golf.common.dto.SearchDto;
+import com.pjs.golf.game.dto.GameDto;
 import com.pjs.golf.game.entity.Game;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 
 public interface GameService {
 
@@ -16,8 +21,14 @@ public interface GameService {
      * */
     Page<Game> getGameList(SearchDto search, Pageable pageable);
 
-    Game createGame(Game game);
+    Game createGame(GameDto gameDto, Account account);
 
-    Game updateGame(Game game);
+    Game updateGame(GameDto gameDto, Account account);
 
+    CollectionModel getPageReesources(PagedResourcesAssembler<Game> assembler, Page<Game> games);
+
+
+    EntityModel getPageReesource(Game game, Account account);
+
+    Game enrollGame(int id, Account account);
 }

@@ -2,6 +2,7 @@ package com.pjs.golf.game.entity;
 
 import com.pjs.golf.account.entity.Account;
 import com.pjs.golf.fields.entity.Fields;
+import com.pjs.golf.game.dto.GameDto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -49,12 +50,12 @@ public class Game {
     private String dayKor;
     private String detail;
 
-    public void updateGame(Game game) {
-        this.opener = game.getOpener();
+    public void updateGame(GameDto gameDto) {
+        this.opener = gameDto.getOpener();
         this.modifyDate = LocalDateTime.now();
-        this.playDate = game.getPlayDate();
-        this.dayKor = game.getDayKor();
-        this.detail = game.getDetail();
+        this.playDate = gameDto.getPlayDate();
+        this.dayKor = gameDto.getDayKor();
+        this.detail = gameDto.getDetail();
     }
 
     public List<Score> enrollToGame(Game game, Account account) {
