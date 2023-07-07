@@ -3,6 +3,7 @@ package com.pjs.golf.fields;
 import com.pjs.golf.account.entity.Account;
 import com.pjs.golf.common.WebCommon;
 import com.pjs.golf.common.annotation.CurrentUser;
+import com.pjs.golf.common.exception.NoSuchDataCustomException;
 import com.pjs.golf.fields.dto.FieldsDto;
 import com.pjs.golf.fields.entity.Fields;
 import com.pjs.golf.fields.service.FieldsService;
@@ -78,7 +79,7 @@ public class FieldsController {
             URI uri = selfLink.toUri();
 
             resource.add(selfLink.withRel("self"));
-            resource.add(selfLink.withRel("update"));
+            resource.add(selfLink.withRel("update-content"));
             resource.add(Link.of("/docs/asciidoc/api.html#").withRel("profile"));
 
             return ResponseEntity.created(uri).body(resource);
@@ -87,5 +88,112 @@ public class FieldsController {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
+
+    /**
+     * 필드 상세
+     * */
+    @GetMapping("/{id}")
+    public ResponseEntity viewField(
+            @PathVariable int id,
+            @CurrentUser Account account){
+
+        try{
+            Fields fields = fieldService.getFieldSingle(id);
+            WebMvcLinkBuilder selfLink = linkTo(FieldsController.class).slash(fields.getId());
+            EntityModel resource = EntityModel.of(fields);
+            URI uri = selfLink.toUri();
+
+            resource.add(selfLink.withRel("self"));
+
+            if(account.equals(fields.getRegister())){
+                resource.add(selfLink.withRel("update-content"));
+            }
+
+            resource.add(Link.of("/docs/asciidoc/api.html#").withRel("profile"));
+
+            return ResponseEntity.created(uri).body(resource);
+
+        }catch (Exception e){
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * 필드 수정
+     * */
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public ResponseEntity updatetField(
+            @RequestBody FieldsDto fieldsDto,
+            Errors errors,
+            @PathVariable int id,
+            @CurrentUser Account account){
+
+        if (errors.hasErrors()) {
+            return webCommon.badRequest(errors, this.getClass());
+        }
+
+        try {
+            Fields query = fieldService.getFieldSingle(id);
+            if (query.getRegister().equals(account)){
+                return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+            }
+        }catch (NoSuchDataCustomException e){
+            return ResponseEntity.notFound().build();
+        }
+        fieldsDto.setModifyDate(LocalDateTime.now());
+        Fields fields = fieldsDto.toEntity();
+        try{
+            Fields updatedFields = fieldService.createField(fields);
+            WebMvcLinkBuilder selfLink = linkTo(FieldsController.class).slash(fields.getId());
+            EntityModel resource = EntityModel.of(updatedFields);
+            URI uri = selfLink.toUri();
+
+            resource.add(selfLink.withRel("self"));
+            resource.add(selfLink.withRel("update-content"));
+            resource.add(Link.of("/docs/asciidoc/api.html#").withRel("profile"));
+
+            return ResponseEntity.created(uri).body(resource);
+
+        }catch (Exception e){
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
+    /**
+     * 필드 삭제
+     * */
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public ResponseEntity deleteField(
+            @RequestBody FieldsDto fieldsDto,
+            Errors errors,
+            @PathVariable int id,
+            @CurrentUser Account account){
+
+        if (errors.hasErrors()) {
+            return webCommon.badRequest(errors, this.getClass());
+        }
+
+        try {
+            Fields query = fieldService.getFieldSingle(id);
+            if (query.getRegister().equals(account)){
+                return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+            }
+        }catch (NoSuchDataCustomException e){
+            return ResponseEntity.notFound().build();
+        }
+        Fields fields = fieldsDto.toEntity();
+        try{
+            fieldService.deleteField(fields);
+            return ResponseEntity.noContent().build();
+
+        }catch (Exception e){
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

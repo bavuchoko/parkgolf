@@ -8,5 +8,4 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ScoreService {
-    List enrollToGame(int gameId, Account account);
 }

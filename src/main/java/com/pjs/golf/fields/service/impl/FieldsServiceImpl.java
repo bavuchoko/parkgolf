@@ -20,12 +20,21 @@ public class FieldsServiceImpl implements FieldsService {
     @Override
     @Transactional(readOnly = true)
     public Fields createField(Fields fields) {
-        Fields result =fieldsJpaRepository.save(fields);
-        return result;
+        return fieldsJpaRepository.save(fields);
     }
 
     @Override
     public Page<Fields> getFieldList(String city, Pageable pageable) {
         return fieldsJpaQuerydslSupport.getFieldsListByCity(city,pageable);
+    }
+
+    @Override
+    public Fields getFieldSingle(int id) {
+        return null;
+    }
+
+    @Override
+    public void deleteField(Fields fields) {
+        fieldsJpaRepository.delete(fields);
     }
 }

@@ -9,4 +9,8 @@ public interface FieldsService {
     Fields createField(Fields fields);
 
     Page<Fields> getFieldList(String city, Pageable pageable);
+
+    Fields getFieldSingle(int id);
+
+    void deleteField(Fields fields);
 }

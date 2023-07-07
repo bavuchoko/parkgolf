@@ -1,5 +1,6 @@
 package com.pjs.golf.common;
 
+import com.pjs.golf.common.dto.SearchDto;
 import com.pjs.golf.game.GameController;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
@@ -65,7 +66,7 @@ public class WebCommon {
     /**
      * localDate 형식으로 넘어온 String을 localDateTime 으로 형변환 하기
      */
-    public LocalDateTime localDateToLocalDateTime(String date, String type) {
+    public static LocalDateTime localDateToLocalDateTime(String date, String type) {
         String time = "";
         if ("startDate".equals(type)) {
             time ="T00:00:00";
@@ -87,7 +88,10 @@ public class WebCommon {
 
         // T이후 붙는 시간형태가 이상할 때
         if(dateArr.length>1){
-            if(!timePattern(dateArr[1])){
+            String pattern = "\\b\\d{2}:\\d{2}:\\d{2}\\b";
+            Pattern regex = Pattern.compile(pattern);
+            Matcher matcher = regex.matcher(dateArr[1]);
+            if(!matcher.matches()){
                 date = dateArr[0] + time;
             }
         }
@@ -96,11 +100,5 @@ public class WebCommon {
     }
 
 
-    private boolean timePattern(String timeTxt) {
-        String pattern = "\\b\\d{2}:\\d{2}:\\d{2}\\b";
-        Pattern regex = Pattern.compile(pattern);
-        Matcher matcher = regex.matcher(timeTxt);
-        return matcher.matches();
-    }
 
 }

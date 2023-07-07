@@ -192,8 +192,7 @@ public class GameController {
     public ResponseEntity enroll(
             @PathVariable int id,
             @CurrentUser Account account){
-        List playerList = scoreService.enrollToGame(id, account);
-        return ResponseEntity.ok(playerList);
+        return null;
     }
 
 
