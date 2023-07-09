@@ -1,10 +1,9 @@
-package com.pjs.golf.score.entity;
+package com.pjs.golf.game.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.pjs.golf.account.entity.Account;
-import com.pjs.golf.game.entity.Game;
-import com.pjs.golf.score.entity.id.ScoreId;
+import com.pjs.golf.game.entity.id.ScoreId;
 import lombok.*;
 
 import javax.persistence.*;

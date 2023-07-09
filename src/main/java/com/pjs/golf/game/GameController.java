@@ -13,7 +13,7 @@ import com.pjs.golf.game.dto.GameDto;
 import com.pjs.golf.game.dto.GameStatus;
 import com.pjs.golf.game.entity.Game;
 import com.pjs.golf.game.service.GameService;
-import com.pjs.golf.score.service.ScoreService;
+import com.pjs.golf.game.service.ScoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +28,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/game",  produces = MediaTypes.HAL_JSON_VALUE)
@@ -240,5 +241,29 @@ public class GameController {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);  // 500
         }
     }
+
+
+    /**
+     * 조편성 하기
+     * */
+
+    @PostMapping("${id}/score/group")
+    public ResponseEntity groupingPlayers(
+            @PathVariable int id,
+            @CurrentUser Account account) {
+        List scores = scoreService.groupingPlayers(id);
+        return null;
+    }
+
+    /**
+     * 경기별 점수 보기
+     * */
+    @GetMapping("${id}/score")
+    public ResponseEntity getScores(@PathVariable int id) {
+        List scores = scoreService.getScoreList(id);
+        return null;
+    }
+
+
 
 }

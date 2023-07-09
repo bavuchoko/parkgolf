@@ -1,4 +1,4 @@
-package com.pjs.golf.score.entity.id;
+package com.pjs.golf.game.entity.id;
 
 import com.pjs.golf.account.entity.Account;
 import com.pjs.golf.game.entity.Game;
