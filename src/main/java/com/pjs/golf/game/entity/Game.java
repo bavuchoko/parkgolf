@@ -3,13 +3,12 @@ package com.pjs.golf.game.entity;
 import com.pjs.golf.account.entity.Account;
 import com.pjs.golf.fields.entity.Fields;
 import com.pjs.golf.game.dto.GameDto;
+import com.pjs.golf.game.dto.GameStatus;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 
 @Entity
 @Getter
@@ -28,7 +27,7 @@ public class Game {
     private String title;
 
     @ManyToOne
-    @JoinColumn(name = "opener_id")
+    @JoinColumn(name = "opener_id", referencedColumnName = "account_id" )
     private Account opener;
 
     @ManyToOne
@@ -42,6 +41,7 @@ public class Game {
     @Column(nullable = false)
     private LocalDateTime playDate;
 
+
     @OneToMany
     private List<Account> players;
 
@@ -50,12 +50,25 @@ public class Game {
     private String dayKor;
     private String detail;
 
+    @Enumerated(EnumType.STRING)
+    private GameStatus status;
+
     public void updateGame(GameDto gameDto) {
         this.opener = gameDto.getOpener();
         this.modifyDate = LocalDateTime.now();
         this.playDate = gameDto.getPlayDate();
         this.dayKor = gameDto.getDayKor();
         this.detail = gameDto.getDetail();
+        this.status = gameDto.getStatus();
     }
 
+    public void enrollGame(Game game, Account account) {
+        this.players.add(account);
+        this.playerCount = game.getPlayerCount()+1;
+    }
+
+
+    public void updateStat(GameStatus stat) {
+        this.status = stat;
+    }
 }

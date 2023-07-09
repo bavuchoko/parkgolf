@@ -3,6 +3,7 @@ package com.pjs.golf.game.service;
 import com.pjs.golf.account.entity.Account;
 import com.pjs.golf.common.dto.SearchDto;
 import com.pjs.golf.game.dto.GameDto;
+import com.pjs.golf.game.dto.GameStatus;
 import com.pjs.golf.game.entity.Game;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,4 +32,7 @@ public interface GameService {
     EntityModel getPageReesource(Game game, Account account);
 
     Game enrollGame(int id, Account account);
+
+    Game updateFowrdStatusGame(int id, Account account, GameStatus gameStatus);
+
 }

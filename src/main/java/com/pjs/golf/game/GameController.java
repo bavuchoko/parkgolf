@@ -6,9 +6,11 @@ import com.pjs.golf.common.WebCommon;
 import com.pjs.golf.common.annotation.CurrentUser;
 import com.pjs.golf.common.dto.SearchDto;
 import com.pjs.golf.common.exception.AlreadyExistSuchDataCustomException;
+import com.pjs.golf.common.exception.InCorrectStatusCustomException;
 import com.pjs.golf.common.exception.NoSuchDataCustomException;
 import com.pjs.golf.common.exception.PermissionLimitedCustomException;
 import com.pjs.golf.game.dto.GameDto;
+import com.pjs.golf.game.dto.GameStatus;
 import com.pjs.golf.game.entity.Game;
 import com.pjs.golf.game.service.GameService;
 import com.pjs.golf.score.service.ScoreService;
@@ -24,6 +26,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
 
 @RestController
 @RequestMapping(value = "/api/game",  produces = MediaTypes.HAL_JSON_VALUE)
@@ -138,9 +142,9 @@ public class GameController {
         }catch (PermissionLimitedCustomException e){
             return new ResponseEntity(HttpStatus.FORBIDDEN); // 403
         }catch (NoSuchDataCustomException e){
-            return new ResponseEntity(HttpStatus.NOT_FOUND); // 404
+            return ResponseEntity.notFound().build(); // 404
         }catch (Exception e){
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);  // 500
+            return ResponseEntity.internalServerError().build();  // 500
         }
     }
 
@@ -149,20 +153,92 @@ public class GameController {
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity enroll(
             @PathVariable int id,
-            @CurrentUser Account account){
+            @CurrentUser Account account) {
         try {
             Game enrolledGame = gameService.enrollGame(id, account);
             EntityModel resource = gameService.getPageReesource(enrolledGame, account);
             return ResponseEntity.ok().body(resource); // 200
         } catch (NoSuchDataCustomException e) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND); // 404
+            return ResponseEntity.notFound().build(); // 404
         } catch (AlreadyExistSuchDataCustomException e) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST); // 400
+            return ResponseEntity.badRequest().body(Collections.singletonMap("msg", e.getMessage()));// 400
+        }catch (InCorrectStatusCustomException e){
+            return ResponseEntity.badRequest().body(Collections.singletonMap("msg", e.getMessage()));// 400
         }catch (Exception e){
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);  // 500
         }
     }
 
+    /**
+     * 등록 마감하기
+     * OPEN -> CLOSED
+     * */
+    @PutMapping("/{id}/close")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public ResponseEntity closeGame(
+            @PathVariable int id,
+            @CurrentUser Account account) {
+        try {
+            Game enrolledGame = gameService.updateFowrdStatusGame(id, account, GameStatus.CLOSED);
+            EntityModel resource = gameService.getPageReesource(enrolledGame, account);
+            return ResponseEntity.ok().body(resource); // 200
+        } catch (NoSuchDataCustomException e) {
+            return ResponseEntity.notFound().build(); // 404
+        } catch (PermissionLimitedCustomException e) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN); // 403
+        }catch (InCorrectStatusCustomException e){
+            return ResponseEntity.badRequest().body(Collections.singletonMap("msg", e.getMessage()));// 400
+        }catch (Exception e){
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);  // 500
+        }
+    }
 
+    /**
+     * 경기 시작하기
+     * ClOSED -> PLAYING
+     * */
+    @PutMapping("/{id}/play")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public ResponseEntity playGame(
+            @PathVariable int id,
+            @CurrentUser Account account) {
+        try {
+            Game enrolledGame = gameService.updateFowrdStatusGame(id, account, GameStatus.PLAYING);
+            EntityModel resource = gameService.getPageReesource(enrolledGame, account);
+            return ResponseEntity.ok().body(resource); // 200
+        } catch (NoSuchDataCustomException e) {
+            return ResponseEntity.notFound().build(); // 404
+        } catch (PermissionLimitedCustomException e) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN); // 403
+        }catch (InCorrectStatusCustomException e){
+            return ResponseEntity.badRequest().body(Collections.singletonMap("msg", e.getMessage()));// 400
+        }catch (Exception e){
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);  // 500
+        }
+    }
+
+    /**
+     * 경기 종료하기
+     * PLAYING -> END
+     * */
+    @PutMapping("/{id}/play")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public ResponseEntity endGame(
+            @PathVariable int id,
+            @CurrentUser Account account) {
+        try {
+            Game enrolledGame = gameService.updateFowrdStatusGame(id, account, GameStatus.END);
+            EntityModel resource = gameService.getPageReesource(enrolledGame, account);
+            return ResponseEntity.ok().body(resource); // 200
+        } catch (NoSuchDataCustomException e) {
+            return ResponseEntity.notFound().build(); // 404
+        } catch (PermissionLimitedCustomException e) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN); // 403
+        }catch (InCorrectStatusCustomException e){
+            return ResponseEntity.badRequest().body(Collections.singletonMap("msg", e.getMessage()));// 400
+        }catch (Exception e){
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);  // 500
+        }
+    }
 
 }

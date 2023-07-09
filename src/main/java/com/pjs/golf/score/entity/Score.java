@@ -3,6 +3,7 @@ package com.pjs.golf.score.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.pjs.golf.account.entity.Account;
+import com.pjs.golf.game.entity.Game;
 import com.pjs.golf.score.entity.id.ScoreId;
 import lombok.*;
 
@@ -18,8 +19,9 @@ import java.time.LocalDateTime;
 public class Score {
 
     @Id
-    @Column(name = "game_id")
-    private Integer gameId;
+    @OneToOne
+    @JoinColumn(name = "game_id", referencedColumnName = "game_id")
+    private Game game;
 
     @Id
     @OneToOne
@@ -29,6 +31,8 @@ public class Score {
     @Id
     @Column(name = "round_id")
     private Integer roundId;
+
+    private int hole;
 
     @Column(name = "play_group")
     private String playGroup;

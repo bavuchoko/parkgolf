@@ -3,10 +3,12 @@ package com.pjs.golf.game.service.impl;
 import com.pjs.golf.account.entity.Account;
 import com.pjs.golf.common.dto.SearchDto;
 import com.pjs.golf.common.exception.AlreadyExistSuchDataCustomException;
+import com.pjs.golf.common.exception.InCorrectStatusCustomException;
 import com.pjs.golf.common.exception.NoSuchDataCustomException;
 import com.pjs.golf.common.exception.PermissionLimitedCustomException;
 import com.pjs.golf.game.GameController;
 import com.pjs.golf.game.dto.GameDto;
+import com.pjs.golf.game.dto.GameStatus;
 import com.pjs.golf.game.entity.Game;
 import com.pjs.golf.game.repository.GameJpaRepository;
 import com.pjs.golf.game.repository.querydsl.GameJpaQuerydslSupport;
@@ -19,7 +21,6 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -52,6 +53,7 @@ public class GameServiceImpl implements GameService {
         gameDto.setOpener(account);
         gameDto.setCreateDate(LocalDateTime.now());
         gameDto.whatIsDay(gameDto.getPlayDate());
+        gameDto.setStatus(GameStatus.OPEN);
         Game game = gameDto.toEntity();
         return gameJpaRepository.save(game);
     }
@@ -96,16 +98,31 @@ public class GameServiceImpl implements GameService {
     @Transactional
     public Game enrollGame(int id, Account account) {
         Game game= gameJpaRepository.findById(id).orElseThrow(()->new NoSuchDataCustomException() );
+        if(game.getStatus().equals(GameStatus.OPEN)) {
+            List players = game.getPlayers();
+            players.stream().filter(player -> player.equals(account))
+                    .findFirst()
+                    .ifPresent(p -> {
+                        throw new AlreadyExistSuchDataCustomException("이미 가입 신청되었습니다.");
+                    });
 
-        List players = game.getPlayers();
+            game.enrollGame(game, account);
+        }else {
+            throw new InCorrectStatusCustomException("요청을 처리할 수 없습니다.");
+        }
+        return game;
+    }
 
-        players.stream().filter( player -> player.equals(account))
-                .findFirst()
-                .ifPresent( p -> {
-                    throw new AlreadyExistSuchDataCustomException("이미 가입 신청되었습니다.");
-                });
-
-        game.getPlayers().add(account);
+    @Override
+    @Transactional
+    public Game updateFowrdStatusGame(int id, Account account, GameStatus gameStatus) {
+        Game game= gameJpaRepository.findById(id).orElseThrow(()->new NoSuchDataCustomException() );
+        if(game.getStatus().isForwardStep(gameStatus)) {
+            if(!game.getOpener().equals(account)) throw new PermissionLimitedCustomException("권한이 없습니다.");
+            game.updateStat(gameStatus);
+        }else {
+            throw new InCorrectStatusCustomException("요청을 처리할 수 없습니다.");
+        }
         return game;
     }
 

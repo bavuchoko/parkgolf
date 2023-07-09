@@ -38,7 +38,7 @@ public class GameDto {
     private int playerCount;
     private String dayKor;
     private String detail;
-
+    private GameStatus status;
     public void whatIsDay(LocalDateTime time) {
         DayOfWeek dayOfWeek = time.getDayOfWeek();
         this.dayKor = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.KOREAN);

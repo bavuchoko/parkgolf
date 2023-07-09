@@ -10,4 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/api/score",  produces = MediaTypes.HAL_JSON_VALUE)
 @RequiredArgsConstructor
 public class ScoreController {
+
+
+
 }
